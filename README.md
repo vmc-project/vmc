@@ -1,5 +1,7 @@
 # Virtual Monte Carlo
 
+## *Warning: This standalone version of VMC is under development.*
+
 The Virtual Monte Carlo (VMC) allows to run different simulation Monte Carlo without changing the user code and therefore the input and output format as well as the geometry and detector response definition.
 
 The core of the VMC is the category of classes [**vmc**](https://root.cern.ch/doc/master/group__vmc.html). It provides a set of interfaces which completely decouple the dependencies between the user code and the concrete Monte Carlo:
@@ -46,4 +48,4 @@ Authors: R.Brun<sup>1</sup>, F.Carminati<sup>1</sup>, A. Gheata<sup>1</sup>, I.H
 Contact: root-vmc@root.cern.ch
 
 VMC pages maintained by: Ivana Hrivnacova <br>
-*Last update: 09/04/2019*
+*Last update: 12/04/2019*

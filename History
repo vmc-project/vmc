@@ -1,0 +1,16 @@
+------------------------------------------------
+ The Virtual Monte Carlo core package
+------------------------------------------------
+
+Tags (history):
+===============
+  19/07/2019
+  v0-1:
+    - The first tag (not yet for production).
+    - All source code/documentation files are identical with 
+      the code in ROOT (v6.18/00) vmc directory.
+    - All further updates to vmc (except for bug fixes) will
+      go to the vmc-project repository.
+ 
+
+

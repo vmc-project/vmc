@@ -1,5 +1,12 @@
-// @(#)root/vmc:$Id$
-// Authors: Al;ice collaboration 25/06/2002
+// -----------------------------------------------------------------------
+// Copyright (C) 2019 CERN and copyright holders of VMC Project.
+// This software is distributed under the terms of the GNU General Public
+// License v3 (GPL Version 3), copied verbatim in the file "LICENSE".
+//
+// See https://github.com/vmc-project/vmc for full licensing information.
+// -----------------------------------------------------------------------
+
+// Authors: Alice collaboration 25/06/2002
 
 /*************************************************************************
  * Copyright (C) 2006, Rene Brun and Fons Rademakers.                    *

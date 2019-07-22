@@ -1,11 +1,10 @@
-#------------------------------------------------
-# The Virtual Monte Carlo packages
-# Copyright (C) 2014 Ivana Hrivnacova
-# All rights reserved.
+# ------------------------------------------------------------------------
+# Copyright (C) 2019 CERN and copyright holders of VMC Project.
+# This software is distributed under the terms of the GNU General Public
+# License v3 (GPL Version 3), copied verbatim in the file "LICENSE".
 #
-# For the licensing terms see geant4_vmc/LICENSE.
-# Contact: root-vmc@cern.ch
-#-------------------------------------------------
+# See https://github.com/vmc-project/vmc for full licensing information.
+# ------------------------------------------------------------------------
 #
 #-----------------------------------------------------------------------
 # Copyright 2011 Nikita Krupen'ko <krnekit@gmail.com>

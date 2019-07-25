@@ -36,12 +36,12 @@ Geant3 VMC (C++) is provided within a single package together with GEANT3 (Fortr
 
 Since the development version the simulation can be shared among multiple different engines deriving from [TVirtualMC](https://root.cern/doc/master/classTVirtualMC.html) which are handled by a singleton [TMCManager](https://root.cern/doc/master/classTMCManager.html) object.
 
-See more detailed description in [the dedicated README](README.multiple.md).
+See more detailed description in [the dedicated README](README.multiple.md) (in Doxygen see \ref refMultipleVMCEngines).
 
 ## Authors
 
 The concept of Virtual MonteCarlo has been developed by the [ALICE Software Project](http://aliceinfo.cern.ch/Offline/).<br>
-Authors: R.Brun<sup>1</sup>, F.Carminati<sup>1</sup>, A. Gheata<sup>1</sup>, I.Hrivnacova<sup>2</sup>, A.Morsch<sup>1</sup>, B.Volkel<sup>1</sup>;<br>
+Authors: R.Brun <sup>1</sup>, F.Carminati <sup>1</sup>, A. Gheata <sup>1</sup>, I.Hrivnacova <sup>2</sup>, A.Morsch <sup>1</sup>, B.Volkel <sup>1</sup>;<br>
 <sup>1</sup>European Organization for Nuclear Research (CERN), Geneva, Switzerland;<br>
 <sup>2</sup>Institut de Physique Nucléaire dʼOrsay (IPNO), Université Paris-Sud, CNRS-IN2P3, Orsay, France 
 

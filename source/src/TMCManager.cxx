@@ -333,9 +333,9 @@ void TMCManager::TransferTrack(TVirtualMC *mc)
 /// Try to restore geometry for a given track
 ///
 
-Bool_t TMCManager::TryRestoreGeometryState(Int_t trackId)
+Bool_t TMCManager::RestoreGeometryState(Int_t trackId, Bool_t checkTrackIdRange)
 {
-  if (trackId < 0 || trackId >= static_cast<Int_t>(fParticles.size()) || !fParticles[trackId]) {
+  if (checkTrackIdRange && (trackId < 0 || trackId >= static_cast<Int_t>(fParticles.size()) || !fParticles[trackId])) {
      return kFALSE;
   }
   UInt_t& geoStateId = fParticlesStatus[trackId]->fGeoStateIndex;
@@ -355,9 +355,9 @@ Bool_t TMCManager::TryRestoreGeometryState(Int_t trackId)
 /// Try to restore geometry for the track currently set
 ///
 
-Bool_t TMCManager::TryRestoreGeometryState()
+Bool_t TMCManager::RestoreGeometryState()
 {
-  return TryRestoreGeometryState(fStacks[fCurrentEngine->GetId()]->GetCurrentTrackNumber());
+  return RestoreGeometryState(fStacks[fCurrentEngine->GetId()]->GetCurrentTrackNumber(), kFALSE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

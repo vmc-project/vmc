@@ -106,10 +106,10 @@ public:
    void TransferTrack(TVirtualMC *mc);
 
    /// Try to restore geometry for a given track
-   Bool_t TryRestoreGeometryState(Int_t trackId);
+   Bool_t RestoreGeometryState(Int_t trackId, Bool_t checkTrackIdRange = kTRUE);
 
    /// Try to restore geometry for the track currently set
-   Bool_t TryRestoreGeometryState();
+   Bool_t RestoreGeometryState();
 
    //
    // Steering and control

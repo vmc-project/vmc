@@ -221,7 +221,7 @@ void TMCVerbose::BeginPrimary()
 
 void TMCVerbose::PreTrack()
 {
-   if (fLevel>2) {
+   if (fLevel>3) {
       PrintBanner();
       PrintTrackInfo();
       PrintBanner();
@@ -232,7 +232,7 @@ void TMCVerbose::PreTrack()
       return;
    }
 
-   if (fLevel>1)
+   if (fLevel>2)
       std::cout << "--- Pre track " << std::endl;
 }
 
@@ -249,7 +249,7 @@ void TMCVerbose::Stepping()
 
       // Step number
       //
-      std::cout << "#" << std::setw(4) << fStepNumber++ << "  ";
+      std::cout << "#" << std::setw(4) << gMC->StepNumber() << "  ";
 
       // Position
       //
@@ -301,7 +301,7 @@ void TMCVerbose::Stepping()
 
 void TMCVerbose::PostTrack()
 {
-   if (fLevel==2)
+   if (fLevel>2)
       std::cout << "--- Post track " << std::endl;
 }
 
@@ -310,7 +310,7 @@ void TMCVerbose::PostTrack()
 
 void TMCVerbose::FinishPrimary()
 {
-   if (fLevel==2)
+   if (fLevel>1)
       std::cout << "--- Finish primary " << std::endl;
 }
 

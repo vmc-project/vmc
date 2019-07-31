@@ -873,12 +873,6 @@ public:
    /// Check whether external particle generation should be used
    Bool_t UseExternalParticleGeneration() const { return fUseExternalParticleGeneration; }
 
-   /// Try to restore geometry for a given track
-   Bool_t TryRestoreGeometryState(Int_t trackId);
-
-   /// Try to restore geometry for the track currently set
-   Bool_t TryRestoreGeometryState();
-
 private:
    /// Set the VMC id
    void SetId(UInt_t id);

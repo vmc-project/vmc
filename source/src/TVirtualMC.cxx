@@ -263,31 +263,3 @@ void TVirtualMC::InterruptTrack()
 {
    Warning("InterruptTrack", "Not implemented.");
 }
-
-////////////////////////////////////////////////////////////////////////////////
-///
-/// Try to restore geometry for a given track
-///
-
-Bool_t TVirtualMC::TryRestoreGeometryState(Int_t trackId)
-{
-   TMCManager* mgr = TMCManager::Instance();
-   if (!mgr) {
-      return kFALSE;
-   }
-   return mgr->TryRestoreGeometryState(trackId);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-/// Try to restore geometry for the track currently set
-///
-
-Bool_t TVirtualMC::TryRestoreGeometryState()
-{
-   TMCManager* mgr = TMCManager::Instance();
-   if (!mgr) {
-      return kFALSE;
-   }
-   return mgr->TryRestoreGeometryState();
-}

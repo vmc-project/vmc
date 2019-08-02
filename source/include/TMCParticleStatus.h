@@ -1,4 +1,11 @@
-// @(#)root/vmc:$Id$
+// -----------------------------------------------------------------------
+// Copyright (C) 2019 CERN and copyright holders of VMC Project.
+// This software is distributed under the terms of the GNU General Public
+// License v3 (GPL Version 3), copied verbatim in the file "LICENSE".
+//
+// See https://github.com/vmc-project/vmc for full licensing information.
+// -----------------------------------------------------------------------
+
 // Authors: Benedikt Volkel 07/03/2019
 
 /*************************************************************************
@@ -13,10 +20,11 @@
 #ifndef ROOT_TMCParticleStatus
 #define ROOT_TMCParticleStatus
 
-// Class TMCParticleStatus
-// ---------------------
-// additional information on the current status of a TParticle
-//
+/** \class TMCParticleStatus
+    \ingroup vmc
+
+Additional information on the current status of a TParticle
+*/
 
 #include <iostream>
 

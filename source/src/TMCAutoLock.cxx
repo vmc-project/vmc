@@ -1,4 +1,11 @@
-// @(#)root/vmc:$Id$
+// -----------------------------------------------------------------------
+// Copyright (C) 2019 CERN and copyright holders of VMC Project.
+// This software is distributed under the terms of the GNU General Public
+// License v3 (GPL Version 3), copied verbatim in the file "LICENSE".
+//
+// See https://github.com/vmc-project/vmc for full licensing information.
+// -----------------------------------------------------------------------
+
 // Author: Ivana Hrivnacova, 24/03/2017
 
 /*************************************************************************
@@ -19,7 +26,7 @@
 // Contact: root-vmc@cern.ch
 //-------------------------------------------------
 
-/// \file TMCAutoLock.cxx
+/// TMCAutoLock.cxx
 /// \brief Implementation of the TMCAutoLock class
 ///
 /// \author I. Hrivnacova; IPN, Orsay

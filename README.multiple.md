@@ -1,4 +1,6 @@
-# The Virtual Monte Carlo (VMC) Package
+\page refMultipleVMCEngines Multiple VMC Engines
+
+# Multiple VMC Engines
 
 ## Overview
 

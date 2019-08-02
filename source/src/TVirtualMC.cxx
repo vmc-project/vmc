@@ -12,6 +12,7 @@
 
 #include "TVirtualMC.h"
 #include "TError.h"
+#include "TMCManager.h"
 
 /** \class TVirtualMC
     \ingroup vmc

@@ -44,8 +44,7 @@ TMCThreadLocal TVirtualMC *TVirtualMC::fgMC = nullptr;
 
 TVirtualMC::TVirtualMC(const char *name, const char *title, Bool_t /*isRootGeometrySupported*/)
    : TNamed(name, title), fApplication(nullptr), fId(0), fStack(nullptr), fManagerStack(nullptr), fDecayer(nullptr),
-     fRandom(nullptr), fMagField(nullptr), fUseExternalGeometryConstruction(kFALSE),
-     fUseExternalParticleGeneration(kFALSE)
+     fRandom(nullptr), fMagField(nullptr)
 {
    fApplication = TVirtualMCApplication::Instance();
 
@@ -65,8 +64,7 @@ TVirtualMC::TVirtualMC(const char *name, const char *title, Bool_t /*isRootGeome
 
 TVirtualMC::TVirtualMC()
    : TNamed(), fApplication(nullptr), fId(0), fStack(nullptr), fManagerStack(nullptr), fDecayer(nullptr),
-     fRandom(nullptr), fMagField(nullptr), fUseExternalGeometryConstruction(kFALSE),
-     fUseExternalParticleGeneration(kFALSE)
+     fRandom(nullptr), fMagField(nullptr)
 {
 }
 
@@ -220,28 +218,6 @@ void TVirtualMC::SetId(UInt_t id)
 void TVirtualMC::SetManagerStack(TMCManagerStack *stack)
 {
    fManagerStack = stack;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-/// Disables internal dispatch to TVirtualMCApplication::ConstructGeometry()
-/// and hence rely on geometry construction being trigeered from outside.
-///
-
-void TVirtualMC::SetExternalGeometryConstruction(Bool_t value)
-{
-   fUseExternalGeometryConstruction = value;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-/// Disables internal dispatch to TVirtualMCApplication::ConstructGeometry()
-/// and hence rely on geometry construction being trigeered from outside.
-///
-
-void TVirtualMC::SetExternalParticleGeneration(Bool_t value)
-{
-   fUseExternalParticleGeneration = value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

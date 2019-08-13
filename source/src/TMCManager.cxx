@@ -104,10 +104,6 @@ void TMCManager::Register(TVirtualMC *mc)
    fStacks.emplace_back(new TMCManagerStack());
    mc->SetStack(fStacks.back().get());
    mc->SetManagerStack(fStacks.back().get());
-   // Don't attempt to call TVirtualMCApplication hooks related to geometry
-   // construction
-   mc->SetExternalGeometryConstruction();
-   mc->SetExternalParticleGeneration();
    // Must update engine pointers here since during construction of the concrete TVirtualMC
    // implementation the static TVirtualMC::GetMC() or defined gMC might be used.
    UpdateEnginePointers(mc);

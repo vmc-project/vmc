@@ -22,4 +22,4 @@ deploy:
   local_dir: doc
   github_token: $GH_REPO_TOKEN
   on:
-    branch: master
+    tags: true

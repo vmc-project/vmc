@@ -78,8 +78,12 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/source/src/*.cxx)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/source/include/*.h)
 
 #---Add library-----------------------------------------------------------------
+set(ROOT_DEPS ROOT::Core ROOT::RIO  ROOT::Rint ROOT::Matrix ROOT::Physics ROOT::MathCore
+    ROOT::Thread ROOT::Geom ROOT::EG)
 add_library(${library_name} ${sources} ${root_dict} ${headers})
-target_link_libraries(${library_name} ${ROOT_LIBRARIES} EG Geom)
+target_link_libraries(${library_name}  ${ROOT_DEPS})
+set_target_properties(${library_name} PROPERTIES INTERFACE_LINK_LIBRARIES "${ROOT_DEPS}")
+target_include_directories(${library_name} INTERFACE $<INSTALL_INTERFACE:include/${base_name}>)
 
 #----Installation---------------------------------------------------------------
 install(DIRECTORY include/ DESTINATION include/${base_name})

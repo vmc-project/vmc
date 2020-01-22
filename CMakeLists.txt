@@ -48,7 +48,7 @@ include(VMCBuildMode)
 option(BUILD_SHARED_LIBS "Build the dynamic libraries" ON)
 
 #--- Find required packages ----------------------------------------------------
-find_package(ROOT REQUIRED)
+find_package(ROOT CONFIG COMPONENTS Geom EG REQUIRED)
 
 #--- Utility to defined installation lib directory -----------------------------
 include(VMCInstallLibDir)

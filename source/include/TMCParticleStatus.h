@@ -20,11 +20,10 @@
 #ifndef ROOT_TMCParticleStatus
 #define ROOT_TMCParticleStatus
 
-/** \class TMCParticleStatus
-    \ingroup vmc
-
-Additional information on the current status of a TParticle
-*/
+// Class TMCParticleStatus
+// ---------------------
+// additional information on the current status of a TParticle
+//
 
 #include <iostream>
 
@@ -56,7 +55,7 @@ struct TMCParticleStatus {
    /// Print all info at once
    void Print() const
    {
-      Info("Print", "Status of track");
+      ::Info("Print", "Status of track");
       std::cout << "\t"
                 << "ID: " << fId << "\n"
                 << "\t"

@@ -20,11 +20,10 @@
 #ifndef ROOT_TMCParticleStatus
 #define ROOT_TMCParticleStatus
 
-/** \class TMCParticleStatus
-    \ingroup vmc
-
-Additional information on the current status of a TParticle
-*/
+// Class TMCParticleStatus
+// ---------------------
+// additional information on the current status of a TParticle
+//
 
 #include <iostream>
 

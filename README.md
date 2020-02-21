@@ -4,13 +4,13 @@
 
 The Virtual Monte Carlo (VMC) allows to run different simulation Monte Carlo without changing the user code and therefore the input and output format as well as the geometry and detector response definition.
 
-The core of the VMC is the category of classes [**vmc**](https://root.cern/doc/master/group__vmc.html). It provides a set of interfaces which completely decouple the dependencies between the user code and the concrete Monte Carlo:
+The core of the VMC is the category of classes **vmc**. It provides a set of interfaces which completely decouple the dependencies between the user code and the concrete Monte Carlo:
 
-- [TVirtualMC](https://root.cern/doc/master/classTVirtualMC.html): Interface to the concrete Monte Carlo program
-- [TVirtualMCApplication](https://root.cern/doc/master/classTVirtualMCApplication.html): Interface to the user's Monte Carlo application
-- [TVirtualMCStack](https://root.cern/doc/master/classTVirtualMCStack.html): Interface to the particle stack
-- [TVirtualMCDecayer](https://root.cern/doc/master/classTVirtualMCDecayer.html): Interface to the external decayer
-- [TVirtualMCSensitiveDetector](https://root.cern/doc/master/classTVirtualMCSensitiveDetector.html): Interface to the user's sensitive detector
+- [TVirtualMC](https://vmc-project.github.io/vmc/html/classTVirtualMC.html): Interface to the concrete Monte Carlo program
+- [TVirtualMCApplication](https://vmc-project.github.io/vmc/html/classTVirtualMCApplication.html): Interface to the user's Monte Carlo application
+- [TVirtualMCStack](https://vmc-project.github.io/vmc/html/classTVirtualMCStack.html): Interface to the particle stack
+- [TVirtualMCDecayer](https://vmc-project.github.io/vmc/html/classTVirtualMCDecayer.html): Interface to the external decayer
+- [TVirtualMCSensitiveDetector](https://vmc-project.github.io/vmc/html/classTVirtualMCSensitiveDetector.html): Interface to the user's sensitive detector
 
 The implementation of the TVirtualMC interface is provided for two Monte Carlo transport codes, GEANT3 and [Geant4](http://geant4.web.cern.ch/geant4/), with the VMC packages listed below. The implementation for the third Monte Carlo transport code, FLUKA, has been discontinued by the FLUKA team in 2010.
 
@@ -27,25 +27,26 @@ It is also possible to define geometry via Geant3-like functions defined in the 
 ## Available VMCs
 
 ### For GEANT3 - geant3
-Geant3 VMC (C++) is provided within a single package together with GEANT3 (Fortran) - geant3 .
+[Geant3 VMC](https://vmc-project.github.io/user-guide/geant3) (C++) is provided within a single package together with GEANT3 (Fortran) - geant3 .
 
 ### For Geant4 - geant4_vmc
-[Geant4 VMC](https://root.cern/geant4-vmc) is provided within a package geant4_vmc , that, in difference from geant3, naturally does not include Geant4 itself and you will need the Geant4 installation to run your VMC application with Geant4 VMC.
+[Geant4 VMC](https://vmc-project.github.io/user-guide/geant4-vmc) is provided within a package geant4_vmc , that, in difference from geant3, naturally does not include Geant4 itself and you will need the Geant4 installation to run your VMC application with Geant4 VMC.
 
 ## Multiple VMCs
 
-Since the development version the simulation can be shared among multiple different engines deriving from [TVirtualMC](https://root.cern/doc/master/classTVirtualMC.html) which are handled by a singleton [TMCManager](https://root.cern/doc/master/classTMCManager.html) object.
+Since the development version the simulation can be shared among multiple different engines deriving from [TVirtualMC](https://vmc-project.github.io/vmc/html/classTVirtualMC.html) which are handled by a singleton [TMCManager](https://vmc-project.github.io/vmc/html/classTMCManager.html) object.
 
-See more detailed description in [the dedicated README](README.multiple.md) (in Doxygen see \ref refMultipleVMCEngines).
+See more detailed description in [the dedicated section](https://vmc-project.github.io/user-guide/vmc/multiple-vmc) in the documentation.
 
 ## Authors
 
 The concept of Virtual MonteCarlo has been developed by the [ALICE Software Project](http://aliceinfo.cern.ch/Offline/).<br>
-Authors: R.Brun <sup>1</sup>, F.Carminati <sup>1</sup>, A. Gheata <sup>1</sup>, I.Hrivnacova <sup>2</sup>, A.Morsch <sup>1</sup>, B.Volkel <sup>1</sup>;<br>
+Authors: R.Brun <sup>1</sup>, F.Carminati <sup>1</sup>, A. Gheata <sup>1</sup>, I.Hrivnacova <sup>2</sup>, A.Morsch <sup>1</sup>, B.Volkel <sup>1,3</sup>;<br>
 <sup>1</sup>European Organization for Nuclear Research (CERN), Geneva, Switzerland;<br>
-<sup>2</sup>Institut de Physique Nucléaire dʼOrsay (IPNO), Université Paris-Sud, CNRS-IN2P3, Orsay, France 
+<sup>2</sup>Universite Paris-Saclay, CNRS/IN2P3, IJCLab, Orsay, France;<br>
+<sup>3</sup>Ruprecht-Karls-University Heidelberg, Germany
 
 Contact: root-vmc@cern.ch
 
 VMC pages maintained by: Ivana Hrivnacova <br>
-*Last update: 05/06/2019*
+*Last update: 21/02/2020*

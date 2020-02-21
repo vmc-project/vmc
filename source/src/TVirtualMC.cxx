@@ -19,6 +19,27 @@
 
 #include "TVirtualMC.h"
 #include "TError.h"
+#include "TMCVersion.h"
+#include "Riostream.h"
+
+namespace
+{
+//_____________________________________________________________________________
+void PrintVersion()
+{
+  /// Prints the  version banner
+
+  std::cout
+    << std::endl
+    << "============================================================="
+    << std::endl << " Virtual Monte Carlo Library" << std::endl << " Version "
+    << VMC_RELEASE << " ( " << VMC_RELEASE_DATE << " )" << std::endl
+    << "============================================================="
+    << std::endl;
+}
+
+} // namespace
+
 
 /** \class TVirtualMC
     \ingroup vmc
@@ -46,6 +67,8 @@ TVirtualMC::TVirtualMC(const char *name, const char *title, Bool_t /*isRootGeome
    : TNamed(name, title), fApplication(nullptr), fId(0), fStack(nullptr), fManagerStack(nullptr), fDecayer(nullptr),
      fRandom(nullptr), fMagField(nullptr)
 {
+   PrintVersion();
+
    fApplication = TVirtualMCApplication::Instance();
 
    if (fApplication) {

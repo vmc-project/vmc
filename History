@@ -8,6 +8,18 @@ See https://github.com/vmc-project/vmc for full licensing information.
 
 Tags (history):
 ===============
+  24/02/2020
+  v1-0:
+  - First production release.
+  - Several fixes for the new multiple engine mode
+  - Updated CMake to make the installation relocatable
+  - Added printing of the version number in TVirtualMC constructor
+    and the TMCVersion.h header with the version definitions.
+
+  Tested with ROOT 6.18/04 (*)
+  (*) This version is ahead of the vmc in ROOT 6.18/04,
+  it includes fixes scheduled for the next ROOT tags 6.18/06 and 6.20/00.
+
   19/07/2019
   v0-1:
     - The first tag (not yet for production).

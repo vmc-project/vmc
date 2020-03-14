@@ -61,14 +61,15 @@ ROOT_GENERATE_DICTIONARY(
   ${CMAKE_CURRENT_SOURCE_DIR}/include/TVirtualMCGeometry.h
   ${CMAKE_CURRENT_SOURCE_DIR}/include/TVirtualMCSensitiveDetector.h
   ${CMAKE_CURRENT_SOURCE_DIR}/include/TVirtualMCStack.h
+  MODULE ${library_name}
   LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/include/LinkDef.h)
 
 # Files produced by the dictionary generation
 SET(root_dict
   ${library_name}_dict.cxx)
 SET(root_dict_libs
-  ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${library_name}_dict_rdict.pcm
-  ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${library_name}_dict.rootmap)
+  ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${library_name}_rdict.pcm
+  ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${library_name}.rootmap)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project

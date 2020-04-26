@@ -62,6 +62,9 @@ ROOT_GENERATE_DICTIONARY(
   TVirtualMCSensitiveDetector.h
   TVirtualMCStack.h
   MODULE ${library_name}
+  OPTIONS "-I${CMAKE_INSTALL_PREFIX}/include/${base_name}"
+    -excludePath "${CMAKE_CURRENT_BINARY_DIR}"
+    -excludePath "${PROJECT_SOURCE_DIR}/source"
   LINKDEF include/LinkDef.h)
 
 # Files produced by the dictionary generation

@@ -8,6 +8,12 @@ See https://github.com/vmc-project/vmc for full licensing information.
 
 Tags (history):
 ===============
+  30/04/2020:
+  v1-0-p2:
+  -  Restored the dictionaries relocability, improve security and clean up
+     for packaging
+     Thanks to Christian Tacke, GSI.
+
   14/03/2020:
   v1-0-p1:
   - Fixed generation of root dictionary map

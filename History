@@ -8,6 +8,13 @@ See https://github.com/vmc-project/vmc for full licensing information.
 
 Tags (history):
 ===============
+  21/07/2020:
+  v1-0-p3:
+  - Fixed track indexing in TMCManagerStack
+    (affecting multiple engines mode only).
+
+  Tested with ROOT 6.22/00
+
   30/04/2020:
   v1-0-p2:
   -  Restored the dictionaries relocability, improve security and clean up

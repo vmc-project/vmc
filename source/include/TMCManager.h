@@ -200,6 +200,7 @@ private:
    Bool_t fIsInitialized;
    /// Flag if specific initialization for engines was done
    Bool_t fIsInitializedUser;
+   Bool_t fGeometryConstructed;
 
    ClassDef(TMCManager, 0)
 };

@@ -52,7 +52,7 @@ TMCThreadLocal TMCManager *TMCManager::fgInstance = nullptr;
 
 TMCManager::TMCManager()
    : fApplication(nullptr), fCurrentEngine(nullptr), fTotalNPrimaries(0), fTotalNTracks(0), fUserStack(nullptr),
-     fBranchArrayContainer(), fIsInitialized(kFALSE), fIsInitializedUser(kFALSE)
+     fBranchArrayContainer(), fIsInitialized(kFALSE), fIsInitializedUser(kFALSE), fGeometryConstructed(kFALSE)
 {
    if (fgInstance) {
       ::Fatal("TMCManager::TMCManager", "Attempt to create two instances of singleton.");
@@ -98,6 +98,19 @@ void TMCManager::Register(TVirtualMC *mc)
          ::Fatal("TMCManager::RegisterMC", "This engine is already registered.");
       }
    }
+   if (!fGeometryConstructed) {
+     fApplication->ConstructGeometry();
+     fApplication->MisalignGeometry();
+     fApplication->ConstructOpGeometry();
+     if (!gGeoManager->IsClosed()) {
+        // Setting the top volume is the duty of the user as well as closing it.
+        // Failing here is just an additional cross check. If not closed the user
+        // might have forgotten something.
+        ::Fatal("TMCManager::Register", "The TGeo geometry is not closed. Please check whether you just have to close "
+                                        "it or whether something was forgotten.");
+     }
+     fGeometryConstructed = kTRUE;
+   }
    // Set id and register.
    mc->SetId(fEngines.size());
    fEngines.push_back(mc);
@@ -123,16 +136,7 @@ void TMCManager::Register(TVirtualMCApplication *application)
    ::Info("TMCManager::Register", "Register user application and construct geometry");
    fApplication = application;
    // TODO Can these 3 functions can be called directly here? Or could any of these depend on an implemented VMC?
-   fApplication->ConstructGeometry();
-   fApplication->MisalignGeometry();
-   fApplication->ConstructOpGeometry();
-   if (!gGeoManager->IsClosed()) {
-      // Setting the top volume is the duty of the user as well as closing it.
-      // Failing here is just an additional cross check. If not closed the user
-      // might have forgotten something.
-      ::Fatal("TMCManager::Register", "The TGeo geometry is not closed. Please check whether you just have to close "
-                                      "it or whether something was forgotten.");
-   }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////

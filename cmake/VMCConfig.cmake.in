@@ -8,6 +8,7 @@
 
 # Configuration file for CMake build for VMC package.
 # It defines the following variables
+#  VMC_PREFIX               - installation prefix
 #  VMC_INCLUDE_DIRS         - include directories for VMC library
 #  VMC_LIBRARIES            - libraries to link against
 #  VMC_CMAKE_INSTALL_LIBDIR - library installation directory
@@ -22,6 +23,7 @@ get_filename_component(_prefix "${_dir}/../.." ABSOLUTE)
 include("${_prefix}/@CMAKE_INSTALL_LIBDIR@/VMC-@VMC_VERSION@/VMCTargets.cmake")
  
 # Import options
+set(VMC_PREFIX "${_prefix}")
 set(VMC_CMAKE_INSTALL_LIBDIR @CMAKE_INSTALL_LIBDIR@)
 
 # These are IMPORTED targets created by VMCTargets.cmake

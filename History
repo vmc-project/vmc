@@ -8,6 +8,18 @@ See https://github.com/vmc-project/vmc for full licensing information.
 
 Tags (history):
 ===============
+  03/12/2021
+  v1-1:
+  - Update in cmake: export install prefix
+  - Fixed generation of root dictionary map
+  - Restored the dictionaries relocability, improve security and clean up
+    for packaging
+    (Thanks to Ch. Tacke, GSI.)
+  - Fixed track indexing, geometry construction in TMCManagerStack
+    (affecting multiple engines mode only).
+
+  Tested with ROOT 6.24/06
+
   24/02/2020
   v1-0:
   - First production release.

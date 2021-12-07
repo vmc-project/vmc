@@ -19,14 +19,6 @@
 set(base_name vmc)
 set(library_name ${PROJECT_NAME}Library)
 
-#-- ROOT (required) ------------------------------------------------------------
-# (with ROOTConfig & UseROOT files from ROOT installation)
-#
-if(NOT ROOT_FOUND)
-  find_package(ROOT CONFIG REQUIRED)
-endif()
-include(${ROOT_USE_FILE})
-
 #--- Utility to defined installation lib directory -----------------------------
 if("${CMAKE_INSTALL_LIBDIR}" MATCHES "")
   include(VMCInstallLibDir)

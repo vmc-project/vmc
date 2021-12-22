@@ -267,12 +267,14 @@ public:
    ///                     - metals    : absorption fraction (0<=x<=1)
    /// - effic       Detection efficiency for UV photons
    /// - rindex      Refraction index (if=0 metal)
+   /// - aspline     Enable spline interpolation of the absco data (Geant4 only)
+   /// - rspline     Enable spline interpolation of the rindex data (Geant4 only)
    virtual void
-   SetCerenkov(Int_t itmed, Int_t npckov, Float_t *ppckov, Float_t *absco, Float_t *effic, Float_t *rindex) = 0;
+   SetCerenkov(Int_t itmed, Int_t npckov, Float_t *ppckov, Float_t *absco, Float_t *effic, Float_t *rindex, Bool_t aspline = false, Bool_t rspline = false) = 0;
 
    /// The same as previous but in double precision
    virtual void
-   SetCerenkov(Int_t itmed, Int_t npckov, Double_t *ppckov, Double_t *absco, Double_t *effic, Double_t *rindex) = 0;
+   SetCerenkov(Int_t itmed, Int_t npckov, Double_t *ppckov, Double_t *absco, Double_t *effic, Double_t *rindex, Bool_t aspline = false, Bool_t rspline = false) = 0;
 
    //
    // functions for definition of surfaces
@@ -314,9 +316,11 @@ public:
    /// - np            number of bins of the table
    /// - pp            value of photon momentum (in GeV)
    /// - values        property values
+   /// - createNewKey  enable user defined property
+   /// - spline        enable spline interpolation of the data
    /// (Geant4 only)
    virtual void
-   SetMaterialProperty(Int_t itmed, const char *propertyName, Int_t np, Double_t *pp, Double_t *values) = 0;
+   SetMaterialProperty(Int_t itmed, const char *propertyName, Int_t np, Double_t *pp, Double_t *values, Bool_t createNewKey = false, Bool_t spline = false) = 0;
 
    /// Define material property via a value
    /// - itmed         tracking medium id
@@ -331,9 +335,11 @@ public:
    /// - np            number of bins of the table
    /// - pp            value of photon momentum (in GeV)
    /// - values        property values
+   /// - createNewKey  enable user defined property
+   /// - spline        enable spline interpolation of the data
    /// (Geant4 only)
    virtual void
-   SetMaterialProperty(const char *surfaceName, const char *propertyName, Int_t np, Double_t *pp, Double_t *values) = 0;
+   SetMaterialProperty(const char *surfaceName, const char *propertyName, Int_t np, Double_t *pp, Double_t *values, Bool_t createNewKey = false, Bool_t spline = false) = 0;
 
    //
    // functions for access to geometry

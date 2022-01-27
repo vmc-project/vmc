@@ -117,6 +117,16 @@ TVirtualMC *TVirtualMC::GetMC()
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
+/// Process one event with given eventId
+///
+
+void TVirtualMC::ProcessEvent(Int_t eventId)
+{
+   ProcessEvent(eventId, kFALSE);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
 /// Set particles stack.
 ///
 
@@ -158,74 +168,6 @@ void TVirtualMC::SetMagField(TVirtualMagField *field)
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-/// Process one event (backwards compatibility)
-///
-
-void TVirtualMC::ProcessEvent()
-{
-   Warning("ProcessEvent", "Not implemented.");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-/// Process one event (backwards compatibility)
-///
-
-void TVirtualMC::ProcessEvent(Int_t eventId)
-{
-   ProcessEvent(eventId, kFALSE);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-/// Return the current step number
-///
-
-Int_t TVirtualMC::StepNumber() const
-{
-   Warning("StepNumber", "Not implemented.");
-   return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-/// Get the current weight
-///
-
-Double_t TVirtualMC::TrackWeight() const
-{
-   Warning("Weight", "Not implemented.");
-   return 1.;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-/// Get the current polarization
-///
-
-void TVirtualMC::TrackPolarization(Double_t &polX, Double_t &polY, Double_t &polZ) const
-{
-   Warning("Polarization", "Not implemented.");
-   polX = 0.;
-   polY = 0.;
-   polZ = 0.;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-/// Get the current polarization
-///
-
-void TVirtualMC::TrackPolarization(TVector3 &pol) const
-{
-   Warning("Polarization", "Not implemented.");
-   pol[0] = 0.;
-   pol[1] = 0.;
-   pol[2] = 0.;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
 /// Set the VMC id
 ///
 
@@ -241,30 +183,4 @@ void TVirtualMC::SetId(UInt_t id)
 void TVirtualMC::SetManagerStack(TMCManagerStack *stack)
 {
    fManagerStack = stack;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-/// An interruptible event can be paused and resumed at any time. It must not
-/// call TVirtualMCApplication::BeginEvent() and ::FinishEvent()
-/// Further, when tracks are popped from the TVirtualMCStack it must be
-/// checked whether these are new tracks or whether they have been
-/// transported up to their current point.
-///
-
-void TVirtualMC::ProcessEvent(Int_t eventId, Bool_t isInterruptible)
-{
-   const char *interruptibleText = isInterruptible ? "interruptible" : "non-interruptible";
-   Warning("ProcessInterruptibleEvent", "Process %s event %i. Not implemented.", interruptibleText, eventId);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-/// That triggers stopping the transport of the current track without dispatching
-/// to common routines like TVirtualMCApplication::PostTrack() etc.
-///
-
-void TVirtualMC::InterruptTrack()
-{
-   Warning("InterruptTrack", "Not implemented.");
 }

@@ -267,12 +267,14 @@ public:
    ///                     - metals    : absorption fraction (0<=x<=1)
    /// - effic       Detection efficiency for UV photons
    /// - rindex      Refraction index (if=0 metal)
+   /// - aspline     Enable spline interpolation of the absco data (Geant4 only)
+   /// - rspline     Enable spline interpolation of the rindex data (Geant4 only)
    virtual void
-   SetCerenkov(Int_t itmed, Int_t npckov, Float_t *ppckov, Float_t *absco, Float_t *effic, Float_t *rindex) = 0;
+   SetCerenkov(Int_t itmed, Int_t npckov, Float_t *ppckov, Float_t *absco, Float_t *effic, Float_t *rindex, Bool_t aspline = false, Bool_t rspline = false) = 0;
 
    /// The same as previous but in double precision
    virtual void
-   SetCerenkov(Int_t itmed, Int_t npckov, Double_t *ppckov, Double_t *absco, Double_t *effic, Double_t *rindex) = 0;
+   SetCerenkov(Int_t itmed, Int_t npckov, Double_t *ppckov, Double_t *absco, Double_t *effic, Double_t *rindex, Bool_t aspline = false, Bool_t rspline = false) = 0;
 
    //
    // functions for definition of surfaces
@@ -314,9 +316,11 @@ public:
    /// - np            number of bins of the table
    /// - pp            value of photon momentum (in GeV)
    /// - values        property values
+   /// - createNewKey  enable user defined property
+   /// - spline        enable spline interpolation of the data
    /// (Geant4 only)
    virtual void
-   SetMaterialProperty(Int_t itmed, const char *propertyName, Int_t np, Double_t *pp, Double_t *values) = 0;
+   SetMaterialProperty(Int_t itmed, const char *propertyName, Int_t np, Double_t *pp, Double_t *values, Bool_t createNewKey = false, Bool_t spline = false) = 0;
 
    /// Define material property via a value
    /// - itmed         tracking medium id
@@ -331,9 +335,11 @@ public:
    /// - np            number of bins of the table
    /// - pp            value of photon momentum (in GeV)
    /// - values        property values
+   /// - createNewKey  enable user defined property
+   /// - spline        enable spline interpolation of the data
    /// (Geant4 only)
    virtual void
-   SetMaterialProperty(const char *surfaceName, const char *propertyName, Int_t np, Double_t *pp, Double_t *values) = 0;
+   SetMaterialProperty(const char *surfaceName, const char *propertyName, Int_t np, Double_t *pp, Double_t *values, Bool_t createNewKey = false, Bool_t spline = false) = 0;
 
    //
    // functions for access to geometry
@@ -421,16 +427,16 @@ public:
    /// Set a sensitive detector to a volume
    /// - volName - the volume name
    /// - sd - the user sensitive detector
-   virtual void SetSensitiveDetector(const TString &volName, TVirtualMCSensitiveDetector *sd);
+   virtual void SetSensitiveDetector(const TString &volName, TVirtualMCSensitiveDetector *sd) = 0;
 
    /// Get a sensitive detector of a volume
    /// - volName - the volume name
-   virtual TVirtualMCSensitiveDetector *GetSensitiveDetector(const TString &volName) const;
+   virtual TVirtualMCSensitiveDetector *GetSensitiveDetector(const TString &volName) const = 0;
 
    /// The scoring option:
    /// if true, scoring is performed only via user defined sensitive detectors and
    /// MCApplication::Stepping is not called
-   virtual void SetExclusiveSDScoring(Bool_t exclusiveSDScoring);
+   virtual void SetExclusiveSDScoring(Bool_t exclusiveSDScoring) = 0;
 
    //
    // ------------------------------------------------
@@ -707,19 +713,19 @@ public:
    virtual Double_t Edep() const = 0;
 
    /// Return the non-ionising energy lost (NIEL) in the current step
-   virtual Double_t NIELEdep() const;
+   virtual Double_t NIELEdep() const = 0;
 
    /// Return the current step number
-   virtual Int_t StepNumber() const;
+   virtual Int_t StepNumber() const = 0;
 
    /// Get the current weight
-   virtual Double_t TrackWeight() const;
+   virtual Double_t TrackWeight() const = 0;
 
    /// Get the current polarization
-   virtual void TrackPolarization(Double_t &polX, Double_t &polY, Double_t &polZ) const;
+   virtual void TrackPolarization(Double_t &polX, Double_t &polY, Double_t &polZ) const = 0;
 
    /// Get the current polarization
-   virtual void TrackPolarization(TVector3 &pol) const;
+   virtual void TrackPolarization(TVector3 &pol) const = 0;
 
    //
    // get methods
@@ -808,10 +814,10 @@ public:
    virtual void BuildPhysics() = 0;
 
    /// Process one event
-   virtual void ProcessEvent(Int_t eventId);
+   virtual void ProcessEvent() = 0;
 
-   /// Process one event (backward-compatibility)
-   virtual void ProcessEvent();
+   /// Process one event with given eventIs
+   virtual void ProcessEvent(Int_t eventId);
 
    /// Process one  run and return true if run has finished successfully,
    /// return false in other cases (run aborted by user)
@@ -886,11 +892,11 @@ private:
    /// Further, when tracks are popped from the TVirtualMCStack it must be
    /// checked whether these are new tracks or whether they have been
    /// transported up to their current point.
-   virtual void ProcessEvent(Int_t eventId, Bool_t isInterruptible);
+   virtual void ProcessEvent(Int_t eventId, Bool_t isInterruptible) = 0;
 
    /// That triggers stopping the transport of the current track without dispatching
    /// to common routines like TVirtualMCApplication::PostTrack() etc.
-   virtual void InterruptTrack();
+   virtual void InterruptTrack() = 0;
 
    // Private, no copying.
    TVirtualMC(const TVirtualMC &mc);
@@ -907,12 +913,12 @@ private:
 #endif
 
 private:
-   Int_t fId;                      //!< Unique identification of this VMC
-                                   // (don't use TObject::SetUniqueId since this
-                                   // is used to uniquely identify TObjects in
-                                   // in general)
-                                   // An ID is given by the running TVirtualMCApp
-                                   // and not by the user.
+   /// Unique identification of this VMC.
+   /// Don't use TObject::SetUniqueId() since this is used to uniquely identify 
+   //  TObjects in in general.
+   /// An ID is given by the running TVirtualMCApp and not by the user.
+   Int_t fId; 
+
    TVirtualMCStack *fStack;        //!< Particles stack
    TMCManagerStack *fManagerStack; //!< Stack handled by the TMCManager
    TVirtualMCDecayer *fDecayer;    //!< External decayer
@@ -921,45 +927,6 @@ private:
 
    ClassDef(TVirtualMC, 1) // Interface to Monte Carlo
 };
-
-// inline functions (with temorary implementation)
-
-inline void TVirtualMC::SetSensitiveDetector(const TString & /*volName*/, TVirtualMCSensitiveDetector * /*sd*/)
-{
-   /// Set a sensitive detector to a volume
-   /// - volName - the volume name
-   /// - sd - the user sensitive detector
-
-   Warning("SetSensitiveDetector(...)", "New function - not yet implemented.");
-}
-
-inline TVirtualMCSensitiveDetector *TVirtualMC::GetSensitiveDetector(const TString & /*volName*/) const
-{
-   /// Get a sensitive detector of a volume
-   /// - volName - the volume name
-
-   Warning("GetSensitiveDetector()", "New function - not yet implemented.");
-
-   return 0;
-}
-
-inline void TVirtualMC::SetExclusiveSDScoring(Bool_t /*exclusiveSDScoring*/)
-{
-   /// The scoring option:
-   /// if true, scoring is performed only via user defined sensitive detectors and
-   /// MCApplication::Stepping is not called
-
-   Warning("SetExclusiveSDScoring(...)", "New function - not yet implemented.");
-}
-
-inline Double_t TVirtualMC::NIELEdep() const
-{
-   /// Return the non-ionising energy lost (NIEL) in the current step
-
-   Warning("NIELEdep()", "New function - not yet implemented.");
-
-   return 0.;
-}
 
 #define gMC (TVirtualMC::GetMC())
 

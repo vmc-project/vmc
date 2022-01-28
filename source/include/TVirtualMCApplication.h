@@ -126,16 +126,6 @@ public:
    /// Clone MC application on worker
    virtual TVirtualMCApplication *CloneForWorker() const { return 0; }
 
-   /// Const Initialize MC application on worker  - now deprecated
-   /// Use new non-const InitOnWorker()  instead
-   virtual void InitForWorker() const {}
-   /// Const Define actions at the beginning of the worker run if needed - now deprecated
-   /// Use new non-const BeginRunOnWorker() instead
-   virtual void BeginWorkerRun() const {}
-   /// Const Define actions at the end of the worker run if needed - now deprecated
-   /// Use new non-const FinishRunOnWorker() instead
-   virtual void FinishWorkerRun() const {}
-
    /// Initialize MC application on worker
    virtual void InitOnWorker() {}
    /// Define actions at the beginning of the worker run if needed

@@ -74,7 +74,7 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/source/src/*.cxx)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/source/include/*.h)
 
 #---Add library-----------------------------------------------------------------
-set(ROOT_DEPS ROOT::Core ROOT::Physics ROOT::Geom ROOT::EG)
+set(ROOT_DEPS ROOT::Core ROOT::RIO ROOT::Tree ROOT::Physics ROOT::Geom ROOT::EG)
 add_library(${library_name} ${sources} ${root_dict} ${headers})
 target_link_libraries(${library_name} ${ROOT_DEPS})
 set_target_properties(${library_name} PROPERTIES INTERFACE_LINK_LIBRARIES "${ROOT_DEPS}")

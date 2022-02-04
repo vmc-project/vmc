@@ -15,7 +15,7 @@
 #message(STATUS Processing Geant4VMCRequiredPackages)
 
 #-- ROOT (required) ------------------------------------------------------------
-find_package(ROOT CONFIG COMPONENTS Geom EG REQUIRED)
+find_package(ROOT CONFIG REQUIRED COMPONENTS Geom EG REQUIRED)
 
 # Cannot mix VMC standalone and vmc in ROOT(deprecated)
 if(ROOT_vmc_FOUND)

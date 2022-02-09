@@ -22,24 +22,20 @@
 #include "TMCVersion.h"
 #include "Riostream.h"
 
-namespace
-{
+namespace {
 //_____________________________________________________________________________
 void PrintVersion()
 {
-  /// Prints the  version banner
+   /// Prints the  version banner
 
-  std::cout
-    << std::endl
-    << "============================================================="
-    << std::endl << " Virtual Monte Carlo Library" << std::endl << " Version "
-    << VMC_RELEASE << " ( " << VMC_RELEASE_DATE << " )" << std::endl
-    << "============================================================="
-    << std::endl;
+   std::cout << std::endl
+             << "=============================================================" << std::endl
+             << " Virtual Monte Carlo Library" << std::endl
+             << " Version " << VMC_RELEASE << " ( " << VMC_RELEASE_DATE << " )" << std::endl
+             << "=============================================================" << std::endl;
 }
 
 } // namespace
-
 
 /** \class TVirtualMC
     \ingroup vmc

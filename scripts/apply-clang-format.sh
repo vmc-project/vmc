@@ -29,34 +29,7 @@ do
   echo "... processing directory $DIR"
   for FILE in `find $DIR -iname "*.h" -o -iname "*.icc" -o -iname "*.cxx"`
   do
-    # Exclude files which were not formatted in ROOT
-    # in order to avoid diverging with the vmc in ROOT
-    PASS=TRUE
-    for TO_BE_SKIPPED in \
-      source/include/TGeoMCGeometry.h \
-      source/include/TMCAutoLock.h \
-      source/include/TMCOptical.h \
-      source/include/TMCParticleType.h \
-      source/include/TMCProcess.h \
-      source/include/TMCtls.h \
-      source/include/TVirtualMCGeometry.h \
-      source/include/TVirtualMCStack.h \
-      source/src/TGeoMCGeometry.cxx \
-      source/src/TMCManager.cxx \
-      source/src/TMCVerbose.cxx \
-      source/src/TVirtualMCGeometry.cxx \
-      source/src/TVirtualMCStack.cxx
-    do
-      if [[ $FILE = "$TO_BE_SKIPPED" ]]; then
-        PASS=FALSE
-      fi
-    done
-
-    if [[ $PASS = "TRUE" ]]; then
-      echo "...... processing file $FILE"
-      clang-format -style=file -i $FILE
-    else
-      echo "...... skipped file $FILE"
-    fi
+    echo "...... processing file $FILE"
+    clang-format -style=file -i $FILE
   done
 done

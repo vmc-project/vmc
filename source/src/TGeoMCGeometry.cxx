@@ -18,7 +18,6 @@
  * For the list of contributors see $ROOTSYS/README/CREDITS.             *
  *************************************************************************/
 
-
 /** \class TGeoMCGeometry
 
 Implementation of the TVirtualMCGeometry interface
@@ -47,17 +46,15 @@ for building TGeo geometry.
 
 ClassImp(TGeoMCGeometry);
 
-TGeoMCGeometry* TGeoMCGeometry::fgInstance=0;
+TGeoMCGeometry *TGeoMCGeometry::fgInstance = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
 /// Standard constructor
 ///
 
-TGeoMCGeometry::TGeoMCGeometry(const char *name, const char *title,
-                               Bool_t g3CompatibleVolumeNames)
-  : TVirtualMCGeometry(name, title),
-    fG3CompatibleVolumeNames(g3CompatibleVolumeNames)
+TGeoMCGeometry::TGeoMCGeometry(const char *name, const char *title, Bool_t g3CompatibleVolumeNames)
+   : TVirtualMCGeometry(name, title), fG3CompatibleVolumeNames(g3CompatibleVolumeNames)
 {
 }
 
@@ -66,11 +63,7 @@ TGeoMCGeometry::TGeoMCGeometry(const char *name, const char *title,
 /// Default constructor
 ///
 
-TGeoMCGeometry::TGeoMCGeometry()
-  : TVirtualMCGeometry(),
-    fG3CompatibleVolumeNames(kFALSE)
-{
-}
+TGeoMCGeometry::TGeoMCGeometry() : TVirtualMCGeometry(), fG3CompatibleVolumeNames(kFALSE) {}
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -79,37 +72,38 @@ TGeoMCGeometry::TGeoMCGeometry()
 
 TGeoMCGeometry::~TGeoMCGeometry()
 {
-   fgInstance=0;
+   fgInstance = 0;
 }
 
 //
 // private methods
 //
 
-
 ////////////////////////////////////////////////////////////////////////////////
 /// Return TGeoManager global pointer.
 /// Create a new TGeoManager object if it does not yet exist.
 
-TGeoManager* TGeoMCGeometry::GetTGeoManager() const
+TGeoManager *TGeoMCGeometry::GetTGeoManager() const
 {
-  if ( ! gGeoManager ) new TGeoManager("TGeo", "Root geometry manager");
+   if (!gGeoManager)
+      new TGeoManager("TGeo", "Root geometry manager");
 
-  return gGeoManager;
+   return gGeoManager;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Convert Float_t* array to Double_t*,
 /// !! The new array has to be deleted by user.
 
-Double_t* TGeoMCGeometry::CreateDoubleArray(Float_t* array, Int_t size) const
+Double_t *TGeoMCGeometry::CreateDoubleArray(Float_t *array, Int_t size) const
 {
-   Double_t* doubleArray;
-   if (size>0) {
+   Double_t *doubleArray;
+   if (size > 0) {
       doubleArray = new Double_t[size];
-      for (Int_t i=0; i<size; i++) doubleArray[i] = array[i];
+      for (Int_t i = 0; i < size; i++)
+         doubleArray[i] = array[i];
    } else {
-      //doubleArray = 0;
+      // doubleArray = 0;
       doubleArray = new Double_t[1];
    }
    return doubleArray;
@@ -126,13 +120,17 @@ void TGeoMCGeometry::Vname(const char *name, char *vname) const
       Int_t l = strlen(name);
       Int_t i;
       l = l < 4 ? l : 4;
-      for (i=0;i<l;i++) vname[i] = toupper(name[i]);
-      for (i=l;i<4;i++) vname[i] = ' ';
+      for (i = 0; i < l; i++)
+         vname[i] = toupper(name[i]);
+      for (i = l; i < 4; i++)
+         vname[i] = ' ';
       vname[4] = 0;
    } else {
       Int_t l = strlen(name);
-      if ( l>=79 ) l = 79;
-      for (Int_t i=0;i<l;i++) vname[i] = name[i];
+      if (l >= 79)
+         l = 79;
+      for (Int_t i = 0; i < l; i++)
+         vname[i] = name[i];
       vname[l] = 0;
    }
 }
@@ -159,13 +157,12 @@ void TGeoMCGeometry::Vname(const char *name, char *vname) const
 /// - buf    pointer to an array of user words
 /// - nwbuf  number of user words
 
-void TGeoMCGeometry::Material(Int_t& kmat, const char* name, Double_t a, Double_t z,
-                       Double_t dens, Double_t radl, Double_t absl, Float_t* buf,
-                       Int_t nwbuf)
+void TGeoMCGeometry::Material(Int_t &kmat, const char *name, Double_t a, Double_t z, Double_t dens, Double_t radl,
+                              Double_t absl, Float_t *buf, Int_t nwbuf)
 {
-   Double_t* dbuf = CreateDoubleArray(buf, nwbuf);
+   Double_t *dbuf = CreateDoubleArray(buf, nwbuf);
    Material(kmat, name, a, z, dens, radl, absl, dbuf, nwbuf);
-   delete [] dbuf;
+   delete[] dbuf;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,9 +183,8 @@ void TGeoMCGeometry::Material(Int_t& kmat, const char* name, Double_t a, Double_
 /// - buf    pointer to an array of user words
 /// - nwbuf  number of user words
 
-void TGeoMCGeometry::Material(Int_t& kmat, const char* name, Double_t a, Double_t z,
-                     Double_t dens, Double_t radl, Double_t absl, Double_t* /*buf*/,
-                     Int_t /*nwbuf*/)
+void TGeoMCGeometry::Material(Int_t &kmat, const char *name, Double_t a, Double_t z, Double_t dens, Double_t radl,
+                              Double_t absl, Double_t * /*buf*/, Int_t /*nwbuf*/)
 {
    GetTGeoManager()->Material(name, a, z, dens, kmat, radl, absl);
 }
@@ -207,21 +203,23 @@ void TGeoMCGeometry::Material(Int_t& kmat, const char* name, Double_t a, Double_
 /// In this case, wmat in output is changed to relative
 /// weights.
 
-void TGeoMCGeometry::Mixture(Int_t& kmat, const char* name, Float_t* a, Float_t* z,
-                    Double_t dens, Int_t nlmat, Float_t* wmat)
+void TGeoMCGeometry::Mixture(Int_t &kmat, const char *name, Float_t *a, Float_t *z, Double_t dens, Int_t nlmat,
+                             Float_t *wmat)
 {
-   Double_t* da = CreateDoubleArray(a, TMath::Abs(nlmat));
-   Double_t* dz = CreateDoubleArray(z, TMath::Abs(nlmat));
-   Double_t* dwmat = CreateDoubleArray(wmat, TMath::Abs(nlmat));
+   Double_t *da = CreateDoubleArray(a, TMath::Abs(nlmat));
+   Double_t *dz = CreateDoubleArray(z, TMath::Abs(nlmat));
+   Double_t *dwmat = CreateDoubleArray(wmat, TMath::Abs(nlmat));
 
    Mixture(kmat, name, da, dz, dens, nlmat, dwmat);
-   for (Int_t i=0; i< TMath::Abs(nlmat); i++) {
-      a[i] = da[i]; z[i] = dz[i]; wmat[i] = dwmat[i];
+   for (Int_t i = 0; i < TMath::Abs(nlmat); i++) {
+      a[i] = da[i];
+      z[i] = dz[i];
+      wmat[i] = dwmat[i];
    }
 
-   delete [] da;
-   delete [] dz;
-   delete [] dwmat;
+   delete[] da;
+   delete[] dz;
+   delete[] dwmat;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -238,18 +236,18 @@ void TGeoMCGeometry::Mixture(Int_t& kmat, const char* name, Float_t* a, Float_t*
 /// In this case, wmat in output is changed to relative
 /// weights.
 
-void TGeoMCGeometry::Mixture(Int_t& kmat, const char* name, Double_t* a, Double_t* z,
-                    Double_t dens, Int_t nlmat, Double_t* wmat)
+void TGeoMCGeometry::Mixture(Int_t &kmat, const char *name, Double_t *a, Double_t *z, Double_t dens, Int_t nlmat,
+                             Double_t *wmat)
 {
    if (nlmat < 0) {
-      nlmat = - nlmat;
+      nlmat = -nlmat;
       Double_t amol = 0;
       Int_t i;
-      for (i=0;i<nlmat;i++) {
-         amol += a[i]*wmat[i];
+      for (i = 0; i < nlmat; i++) {
+         amol += a[i] * wmat[i];
       }
-      for (i=0;i<nlmat;i++) {
-         wmat[i] *= a[i]/amol;
+      for (i = 0; i < nlmat; i++) {
+         wmat[i] *= a[i] / amol;
       }
    }
    GetTGeoManager()->Mixture(name, a, z, dens, nlmat, wmat, kmat);
@@ -278,16 +276,14 @@ void TGeoMCGeometry::Mixture(Int_t& kmat, const char* name, Double_t* a, Double_
 /// - ubuf      pointer to an array of user words
 /// - nbuf      number of user words
 
-void TGeoMCGeometry::Medium(Int_t& kmed, const char* name, Int_t nmat, Int_t isvol,
-                   Int_t ifield, Double_t fieldm, Double_t tmaxfd,
-                   Double_t stemax, Double_t deemax, Double_t epsil,
-                   Double_t stmin, Float_t* ubuf, Int_t nbuf)
+void TGeoMCGeometry::Medium(Int_t &kmed, const char *name, Int_t nmat, Int_t isvol, Int_t ifield, Double_t fieldm,
+                            Double_t tmaxfd, Double_t stemax, Double_t deemax, Double_t epsil, Double_t stmin,
+                            Float_t *ubuf, Int_t nbuf)
 {
-  //printf("Creating mediuma: %s, numed=%d, nmat=%d\n",name,kmed,nmat);
-   Double_t* dubuf = CreateDoubleArray(ubuf, nbuf);
-   Medium(kmed, name, nmat, isvol, ifield, fieldm, tmaxfd, stemax, deemax, epsil,
-          stmin, dubuf, nbuf);
-   delete [] dubuf;
+   // printf("Creating mediuma: %s, numed=%d, nmat=%d\n",name,kmed,nmat);
+   Double_t *dubuf = CreateDoubleArray(ubuf, nbuf);
+   Medium(kmed, name, nmat, isvol, ifield, fieldm, tmaxfd, stemax, deemax, epsil, stmin, dubuf, nbuf);
+   delete[] dubuf;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -313,12 +309,11 @@ void TGeoMCGeometry::Medium(Int_t& kmed, const char* name, Int_t nmat, Int_t isv
 /// - ubuf      pointer to an array of user words
 /// - nbuf      number of user words
 
-void TGeoMCGeometry::Medium(Int_t& kmed, const char* name, Int_t nmat, Int_t isvol,
-                   Int_t ifield, Double_t fieldm, Double_t tmaxfd,
-                   Double_t stemax, Double_t deemax, Double_t epsil,
-                   Double_t stmin, Double_t* /*ubuf*/, Int_t /*nbuf*/)
+void TGeoMCGeometry::Medium(Int_t &kmed, const char *name, Int_t nmat, Int_t isvol, Int_t ifield, Double_t fieldm,
+                            Double_t tmaxfd, Double_t stemax, Double_t deemax, Double_t epsil, Double_t stmin,
+                            Double_t * /*ubuf*/, Int_t /*nbuf*/)
 {
-   GetTGeoManager()->Medium(name,kmed,nmat, isvol, ifield, fieldm, tmaxfd, stemax,deemax, epsil, stmin);
+   GetTGeoManager()->Medium(name, kmed, nmat, isvol, ifield, fieldm, tmaxfd, stemax, deemax, epsil, stmin);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -333,8 +328,8 @@ void TGeoMCGeometry::Medium(Int_t& kmed, const char* name, Int_t nmat, Int_t isv
 /// - thetaZ   polar angle for axis Z
 /// - phiZ     azimuthal angle for axis Z
 
-void TGeoMCGeometry::Matrix(Int_t& krot, Double_t thex, Double_t phix, Double_t they,
-                   Double_t phiy, Double_t thez, Double_t phiz)
+void TGeoMCGeometry::Matrix(Int_t &krot, Double_t thex, Double_t phix, Double_t they, Double_t phiy, Double_t thez,
+                            Double_t phiz)
 {
    krot = GetTGeoManager()->GetListOfMatrices()->GetEntriesFast();
    GetTGeoManager()->Matrix(krot, thex, phix, they, phiy, thez, phiz);
@@ -350,12 +345,11 @@ void TGeoMCGeometry::Matrix(Int_t& krot, Double_t thex, Double_t phix, Double_t 
 /// - np     Number of shape parameters
 /// - upar   Vector containing shape parameters
 
-Int_t TGeoMCGeometry::Gsvolu(const char *name, const char *shape, Int_t nmed,
-                    Float_t *upar, Int_t npar)
+Int_t TGeoMCGeometry::Gsvolu(const char *name, const char *shape, Int_t nmed, Float_t *upar, Int_t npar)
 {
-   Double_t* dupar = CreateDoubleArray(upar, npar);
+   Double_t *dupar = CreateDoubleArray(upar, npar);
    Int_t id = Gsvolu(name, shape, nmed, dupar, npar);
-   delete [] dupar;
+   delete[] dupar;
    return id;
 }
 
@@ -369,15 +363,14 @@ Int_t TGeoMCGeometry::Gsvolu(const char *name, const char *shape, Int_t nmed,
 /// - np     Number of shape parameters
 /// - upar   Vector containing shape parameters
 
-Int_t TGeoMCGeometry::Gsvolu(const char *name, const char *shape, Int_t nmed,
-                    Double_t *upar, Int_t npar)
+Int_t TGeoMCGeometry::Gsvolu(const char *name, const char *shape, Int_t nmed, Double_t *upar, Int_t npar)
 {
    char vname[80];
-   Vname(name,vname);
+   Vname(name, vname);
    char vshape[5];
-   Vname(shape,vshape);
+   Vname(shape, vshape);
 
-   TGeoVolume* vol = GetTGeoManager()->Volume(vname, vshape, nmed, upar, npar);
+   TGeoVolume *vol = GetTGeoManager()->Volume(vname, vshape, nmed, upar, npar);
    if (!vol) {
       Fatal("Gsvolu", "Could not create volume %s", name);
       return -1;
@@ -396,13 +389,12 @@ Int_t TGeoMCGeometry::Gsvolu(const char *name, const char *shape, Int_t nmed,
 /// - iaxis  Axis value:
 ///               X,Y,Z of CAXIS will be translated to 1,2,3 for IAXIS.
 
-void  TGeoMCGeometry::Gsdvn(const char *name, const char *mother, Int_t ndiv,
-                   Int_t iaxis)
+void TGeoMCGeometry::Gsdvn(const char *name, const char *mother, Int_t ndiv, Int_t iaxis)
 {
    char vname[80];
-   Vname(name,vname);
+   Vname(name, vname);
    char vmother[80];
-   Vname(mother,vmother);
+   Vname(mother, vmother);
 
    GetTGeoManager()->Division(vname, vmother, iaxis, ndiv, 0, 0, 0, "n");
 }
@@ -415,13 +407,12 @@ void  TGeoMCGeometry::Gsdvn(const char *name, const char *mother, Int_t ndiv,
 /// along axis iaxis starting at coordinate value c0.
 /// the new volume created will be medium number numed.
 
-void  TGeoMCGeometry::Gsdvn2(const char *name, const char *mother, Int_t ndiv,
-                    Int_t iaxis, Double_t c0i, Int_t numed)
+void TGeoMCGeometry::Gsdvn2(const char *name, const char *mother, Int_t ndiv, Int_t iaxis, Double_t c0i, Int_t numed)
 {
    char vname[80];
-   Vname(name,vname);
+   Vname(name, vname);
    char vmother[80];
-   Vname(mother,vmother);
+   Vname(mother, vmother);
 
    GetTGeoManager()->Division(vname, vmother, iaxis, ndiv, c0i, 0, numed, "nx");
 }
@@ -437,13 +428,13 @@ void  TGeoMCGeometry::Gsdvn2(const char *name, const char *mother, Int_t ndiv,
 /// ndvmx is the expected maximum number of divisions
 /// (If 0, no protection tests are performed in Geant3)
 
-void  TGeoMCGeometry::Gsdvt(const char *name, const char *mother, Double_t step,
-                   Int_t iaxis, Int_t numed, Int_t /*ndvmx*/)
+void TGeoMCGeometry::Gsdvt(const char *name, const char *mother, Double_t step, Int_t iaxis, Int_t numed,
+                           Int_t /*ndvmx*/)
 {
    char vname[80];
-   Vname(name,vname);
+   Vname(name, vname);
    char vmother[80];
-   Vname(mother,vmother);
+   Vname(mother, vmother);
 
    GetTGeoManager()->Division(vname, vmother, iaxis, 0, 0, step, numed, "s");
 }
@@ -460,13 +451,13 @@ void  TGeoMCGeometry::Gsdvt(const char *name, const char *mother, Double_t step,
 /// ndvmx is the expected maximum number of divisions
 /// (If 0, no protection tests are performed in Geant3)
 
-void  TGeoMCGeometry::Gsdvt2(const char *name, const char *mother, Double_t step,
-                    Int_t iaxis, Double_t c0, Int_t numed, Int_t /*ndvmx*/)
+void TGeoMCGeometry::Gsdvt2(const char *name, const char *mother, Double_t step, Int_t iaxis, Double_t c0, Int_t numed,
+                            Int_t /*ndvmx*/)
 {
    char vname[80];
-   Vname(name,vname);
+   Vname(name, vname);
    char vmother[80];
-   Vname(mother,vmother);
+   Vname(mother, vmother);
 
    GetTGeoManager()->Division(vname, vmother, iaxis, 0, c0, step, numed, "sx");
 }
@@ -487,10 +478,10 @@ void  TGeoMCGeometry::Gsdvt2(const char *name, const char *mother, Double_t step
 /// - IAX = 7    THETA (THETA=0 => Z axis)
 /// Nothing to be done for TGeo  //xx
 
-void  TGeoMCGeometry::Gsord(const char * /*name*/, Int_t /*iax*/)
+void TGeoMCGeometry::Gsord(const char * /*name*/, Int_t /*iax*/)
 {
-  // TBC - keep this function
-  // nothing to be done for TGeo  //xx
+   // TBC - keep this function
+   // nothing to be done for TGeo  //xx
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -507,19 +498,20 @@ void  TGeoMCGeometry::Gsord(const char * /*name*/, Int_t /*iax*/)
 /// - irot   Rotation matrix number w.r.t. mother ref. sys.
 /// - konly  ONLY/MANY flag
 
-void  TGeoMCGeometry::Gspos(const char *name, Int_t nr, const char *mother, Double_t x,
-                   Double_t y, Double_t z, Int_t irot, const char *konly)
+void TGeoMCGeometry::Gspos(const char *name, Int_t nr, const char *mother, Double_t x, Double_t y, Double_t z,
+                           Int_t irot, const char *konly)
 {
    TString only = konly;
    only.ToLower();
    Bool_t isOnly = kFALSE;
-   if (only.Contains("only")) isOnly = kTRUE;
+   if (only.Contains("only"))
+      isOnly = kTRUE;
    char vname[80];
-   Vname(name,vname);
+   Vname(name, vname);
    char vmother[80];
-   Vname(mother,vmother);
+   Vname(mother, vmother);
 
-   Double_t *upar=0;
+   Double_t *upar = 0;
    GetTGeoManager()->Node(vname, nr, vmother, x, y, z, irot, isOnly, upar);
 }
 
@@ -528,13 +520,12 @@ void  TGeoMCGeometry::Gspos(const char *name, Int_t nr, const char *mother, Doub
 /// Place a copy of generic volume name with user number
 ///  nr inside mother, with its parameters upar(1..np)
 
-void  TGeoMCGeometry::Gsposp(const char *name, Int_t nr, const char *mother,
-                    Double_t x, Double_t y, Double_t z, Int_t irot,
-                    const char *konly, Float_t *upar, Int_t np )
+void TGeoMCGeometry::Gsposp(const char *name, Int_t nr, const char *mother, Double_t x, Double_t y, Double_t z,
+                            Int_t irot, const char *konly, Float_t *upar, Int_t np)
 {
-   Double_t* dupar = CreateDoubleArray(upar, np);
+   Double_t *dupar = CreateDoubleArray(upar, np);
    Gsposp(name, nr, mother, x, y, z, irot, konly, dupar, np);
-   delete [] dupar;
+   delete[] dupar;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -542,20 +533,20 @@ void  TGeoMCGeometry::Gsposp(const char *name, Int_t nr, const char *mother,
 /// Place a copy of generic volume name with user number
 ///  nr inside mother, with its parameters upar(1..np)
 
-void  TGeoMCGeometry::Gsposp(const char *name, Int_t nr, const char *mother,
-                    Double_t x, Double_t y, Double_t z, Int_t irot,
-                    const char *konly, Double_t *upar, Int_t np )
+void TGeoMCGeometry::Gsposp(const char *name, Int_t nr, const char *mother, Double_t x, Double_t y, Double_t z,
+                            Int_t irot, const char *konly, Double_t *upar, Int_t np)
 {
    TString only = konly;
    only.ToLower();
    Bool_t isOnly = kFALSE;
-   if (only.Contains("only")) isOnly = kTRUE;
+   if (only.Contains("only"))
+      isOnly = kTRUE;
    char vname[80];
-   Vname(name,vname);
+   Vname(name, vname);
    char vmother[80];
-   Vname(mother,vmother);
+   Vname(mother, vmother);
 
-   GetTGeoManager()->Node(vname,nr,vmother, x,y,z,irot,isOnly,upar,np);
+   GetTGeoManager()->Node(vname, nr, vmother, x, y, z, irot, isOnly, upar, np);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -565,8 +556,8 @@ void  TGeoMCGeometry::Gsposp(const char *name, Int_t nr, const char *mother,
 Int_t TGeoMCGeometry::VolId(const char *name) const
 {
    Int_t uid = GetTGeoManager()->GetUID(name);
-   if (uid<0) {
-      printf("VolId: Volume %s not found\n",name);
+   if (uid < 0) {
+      printf("VolId: Volume %s not found\n", name);
       return 0;
    }
    return uid;
@@ -578,10 +569,11 @@ Int_t TGeoMCGeometry::VolId(const char *name) const
 
 Int_t TGeoMCGeometry::MediumId(const char *name) const
 {
-   TGeoMedium* medium = GetTGeoManager()->GetMedium(name);
-   if (medium) return medium->GetId();
+   TGeoMedium *medium = GetTGeoManager()->GetMedium(name);
+   if (medium)
+      return medium->GetId();
 
-   printf("MediumId: Medium %s not found\n",name);
+   printf("MediumId: Medium %s not found\n", name);
    return 0;
 }
 
@@ -589,11 +581,11 @@ Int_t TGeoMCGeometry::MediumId(const char *name) const
 ///
 /// Return the volume name given the volume identifier
 
-const char* TGeoMCGeometry::VolName(Int_t id) const
+const char *TGeoMCGeometry::VolName(Int_t id) const
 {
    TGeoVolume *volume = GetTGeoManager()->GetVolume(id);
    if (!volume) {
-      Error("VolName","volume with id=%d does not exist",id);
+      Error("VolName", "volume with id=%d does not exist", id);
       return "NULL";
    }
    return volume->GetName();
@@ -605,16 +597,16 @@ const char* TGeoMCGeometry::VolName(Int_t id) const
 
 Int_t TGeoMCGeometry::NofVolumes() const
 {
-   return GetTGeoManager()->GetListOfUVolumes()->GetEntriesFast()-1;
+   return GetTGeoManager()->GetListOfUVolumes()->GetEntriesFast() - 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Return number of daughters of the volume specified by volName
 /// According to A. Morsch' G3toRoot class (by A. Morsch)
 
-Int_t TGeoMCGeometry::NofVolDaughters(const char* volName) const
+Int_t TGeoMCGeometry::NofVolDaughters(const char *volName) const
 {
-   TGeoVolume* volume = GetTGeoManager()->GetVolume(volName);
+   TGeoVolume *volume = GetTGeoManager()->GetVolume(volName);
 
    if (!volume) {
       Error("NofVolDaughters", "Volume %s not found.", volName);
@@ -628,17 +620,17 @@ Int_t TGeoMCGeometry::NofVolDaughters(const char* volName) const
 /// Return the name of i-th daughters of the volume specified by volName
 /// According to A. Morsch' G3toRoot class.
 
-const char*  TGeoMCGeometry::VolDaughterName(const char* volName, Int_t i) const
+const char *TGeoMCGeometry::VolDaughterName(const char *volName, Int_t i) const
 {
    // Get volume
-   TGeoVolume* volume = GetTGeoManager()->GetVolume(volName);
+   TGeoVolume *volume = GetTGeoManager()->GetVolume(volName);
    if (!volume) {
       Error("VolDaughterName", "Volume %s not found.", volName);
       return "";
    }
 
    // Check index
-   if (i<0 || i>=volume->GetNdaughters()) {
+   if (i < 0 || i >= volume->GetNdaughters()) {
       Error("VolDaughterName", "Volume %s Index out of limits", volName);
       return "";
    }
@@ -651,17 +643,17 @@ const char*  TGeoMCGeometry::VolDaughterName(const char* volName, Int_t i) const
 /// Return the copyNo of i-th daughters of the volume specified by volName
 /// According to A. Morsch' G3toRoot class.
 
-Int_t TGeoMCGeometry::VolDaughterCopyNo(const char* volName, Int_t i) const
+Int_t TGeoMCGeometry::VolDaughterCopyNo(const char *volName, Int_t i) const
 {
    // Get volume
-   TGeoVolume* volume = GetTGeoManager()->GetVolume(volName);
+   TGeoVolume *volume = GetTGeoManager()->GetVolume(volName);
    if (!volume) {
       Error("VolDaughterName", "Volume %s not found.", volName);
       return 0;
    }
 
    // Check index
-   if (i<0 || i>=volume->GetNdaughters()) {
+   if (i < 0 || i >= volume->GetNdaughters()) {
       Error("VolDaughterName", "Volume %s Index out of limits", volName);
       return 0;
    }
@@ -678,11 +670,12 @@ Int_t TGeoMCGeometry::VolId2Mate(Int_t id) const
 {
    TGeoVolume *volume = GetTGeoManager()->GetVolume(id);
    if (!volume) {
-      Error("VolId2Mate","volume with id=%d does not exist",id);
+      Error("VolId2Mate", "volume with id=%d does not exist", id);
       return 0;
    }
    TGeoMedium *med = volume->GetMedium();
-   if (!med) return 0;
+   if (!med)
+      return 0;
    return med->GetId();
 }
 
@@ -707,7 +700,7 @@ Int_t TGeoMCGeometry::VolId2Mate(Int_t id) const
 ///   - A logical value if kFALSE then an error occurred and no change to
 ///     mat was made.
 
-Bool_t TGeoMCGeometry::GetTransformation(const TString &volumePath,TGeoHMatrix &mat)
+Bool_t TGeoMCGeometry::GetTransformation(const TString &volumePath, TGeoHMatrix &mat)
 {
    // We have to preserve the modeler state
    GetTGeoManager()->PushPath();
@@ -732,8 +725,7 @@ Bool_t TGeoMCGeometry::GetTransformation(const TString &volumePath,TGeoHMatrix &
 ///   - A logical indicating whether there was an error in getting this
 ///     information
 
-Bool_t TGeoMCGeometry::GetShape(const TString &volumePath,TString &shapeType,
-                         TArrayD &par)
+Bool_t TGeoMCGeometry::GetShape(const TString &volumePath, TString &shapeType, TArrayD &par)
 {
    Int_t npar;
    GetTGeoManager()->PushPath();
@@ -741,240 +733,240 @@ Bool_t TGeoMCGeometry::GetShape(const TString &volumePath,TString &shapeType,
       GetTGeoManager()->PopPath();
       return kFALSE;
    }
-   TGeoVolume * vol = GetTGeoManager()->GetCurrentVolume();
+   TGeoVolume *vol = GetTGeoManager()->GetCurrentVolume();
    GetTGeoManager()->PopPath();
-   if (!vol) return kFALSE;
+   if (!vol)
+      return kFALSE;
    TGeoShape *shape = vol->GetShape();
    TClass *class_type = shape->IsA();
-   if (class_type==TGeoBBox::Class()) {
+   if (class_type == TGeoBBox::Class()) {
       shapeType = "BOX";
       npar = 3;
       par.Set(npar);
-      TGeoBBox *box = (TGeoBBox*)shape;
-      par.AddAt(box->GetDX(),0);
-      par.AddAt(box->GetDY(),1);
-      par.AddAt(box->GetDZ(),2);
+      TGeoBBox *box = (TGeoBBox *)shape;
+      par.AddAt(box->GetDX(), 0);
+      par.AddAt(box->GetDY(), 1);
+      par.AddAt(box->GetDZ(), 2);
       return kTRUE;
    }
-   if (class_type==TGeoTrd1::Class()) {
+   if (class_type == TGeoTrd1::Class()) {
       shapeType = "TRD1";
       npar = 4;
       par.Set(npar);
-      TGeoTrd1 *trd1 = (TGeoTrd1*)shape;
-      par.AddAt(trd1->GetDx1(),0);
-      par.AddAt(trd1->GetDx2(),1);
+      TGeoTrd1 *trd1 = (TGeoTrd1 *)shape;
+      par.AddAt(trd1->GetDx1(), 0);
+      par.AddAt(trd1->GetDx2(), 1);
       par.AddAt(trd1->GetDy(), 2);
       par.AddAt(trd1->GetDz(), 3);
       return kTRUE;
    }
-   if (class_type==TGeoTrd2::Class()) {
+   if (class_type == TGeoTrd2::Class()) {
       shapeType = "TRD2";
       npar = 5;
       par.Set(npar);
-      TGeoTrd2 *trd2 = (TGeoTrd2*)shape;
-      par.AddAt(trd2->GetDx1(),0);
-      par.AddAt(trd2->GetDx2(),1);
-      par.AddAt(trd2->GetDy1(),2);
-      par.AddAt(trd2->GetDy2(),3);
+      TGeoTrd2 *trd2 = (TGeoTrd2 *)shape;
+      par.AddAt(trd2->GetDx1(), 0);
+      par.AddAt(trd2->GetDx2(), 1);
+      par.AddAt(trd2->GetDy1(), 2);
+      par.AddAt(trd2->GetDy2(), 3);
       par.AddAt(trd2->GetDz(), 4);
       return kTRUE;
    }
-   if (class_type==TGeoTrap::Class()) {
+   if (class_type == TGeoTrap::Class()) {
       shapeType = "TRAP";
       npar = 11;
       par.Set(npar);
-      TGeoTrap *trap = (TGeoTrap*)shape;
-      Double_t tth = TMath::Tan(trap->GetTheta()*TMath::DegToRad());
-      par.AddAt(trap->GetDz(),0);
-      par.AddAt(tth*TMath::Cos(trap->GetPhi()*TMath::DegToRad()),1);
-      par.AddAt(tth*TMath::Sin(trap->GetPhi()*TMath::DegToRad()),2);
-      par.AddAt(trap->GetH1(),3);
-      par.AddAt(trap->GetBl1(),4);
-      par.AddAt(trap->GetTl1(),5);
-      par.AddAt(TMath::Tan(trap->GetAlpha1()*TMath::DegToRad()),6);
-      par.AddAt(trap->GetH2(),7);
-      par.AddAt(trap->GetBl2(),8);
-      par.AddAt(trap->GetTl2(),9);
-      par.AddAt(TMath::Tan(trap->GetAlpha2()*TMath::DegToRad()),10);
+      TGeoTrap *trap = (TGeoTrap *)shape;
+      Double_t tth = TMath::Tan(trap->GetTheta() * TMath::DegToRad());
+      par.AddAt(trap->GetDz(), 0);
+      par.AddAt(tth * TMath::Cos(trap->GetPhi() * TMath::DegToRad()), 1);
+      par.AddAt(tth * TMath::Sin(trap->GetPhi() * TMath::DegToRad()), 2);
+      par.AddAt(trap->GetH1(), 3);
+      par.AddAt(trap->GetBl1(), 4);
+      par.AddAt(trap->GetTl1(), 5);
+      par.AddAt(TMath::Tan(trap->GetAlpha1() * TMath::DegToRad()), 6);
+      par.AddAt(trap->GetH2(), 7);
+      par.AddAt(trap->GetBl2(), 8);
+      par.AddAt(trap->GetTl2(), 9);
+      par.AddAt(TMath::Tan(trap->GetAlpha2() * TMath::DegToRad()), 10);
       return kTRUE;
    }
-   if (class_type==TGeoTube::Class()) {
+   if (class_type == TGeoTube::Class()) {
       shapeType = "TUBE";
       npar = 3;
       par.Set(npar);
-      TGeoTube *tube = (TGeoTube*)shape;
-      par.AddAt(tube->GetRmin(),0);
-      par.AddAt(tube->GetRmax(),1);
-      par.AddAt(tube->GetDz(),2);
+      TGeoTube *tube = (TGeoTube *)shape;
+      par.AddAt(tube->GetRmin(), 0);
+      par.AddAt(tube->GetRmax(), 1);
+      par.AddAt(tube->GetDz(), 2);
       return kTRUE;
    }
-   if (class_type==TGeoTubeSeg::Class()) {
+   if (class_type == TGeoTubeSeg::Class()) {
       shapeType = "TUBS";
       npar = 5;
       par.Set(npar);
-      TGeoTubeSeg *tubs = (TGeoTubeSeg*)shape;
-      par.AddAt(tubs->GetRmin(),0);
-      par.AddAt(tubs->GetRmax(),1);
-      par.AddAt(tubs->GetDz(),2);
-      par.AddAt(tubs->GetPhi1(),3);
-      par.AddAt(tubs->GetPhi2(),4);
+      TGeoTubeSeg *tubs = (TGeoTubeSeg *)shape;
+      par.AddAt(tubs->GetRmin(), 0);
+      par.AddAt(tubs->GetRmax(), 1);
+      par.AddAt(tubs->GetDz(), 2);
+      par.AddAt(tubs->GetPhi1(), 3);
+      par.AddAt(tubs->GetPhi2(), 4);
       return kTRUE;
    }
-   if (class_type==TGeoCone::Class()) {
+   if (class_type == TGeoCone::Class()) {
       shapeType = "CONE";
       npar = 5;
       par.Set(npar);
-      TGeoCone *cone = (TGeoCone*)shape;
-      par.AddAt(cone->GetDz(),0);
-      par.AddAt(cone->GetRmin1(),1);
-      par.AddAt(cone->GetRmax1(),2);
-      par.AddAt(cone->GetRmin2(),3);
-      par.AddAt(cone->GetRmax2(),4);
+      TGeoCone *cone = (TGeoCone *)shape;
+      par.AddAt(cone->GetDz(), 0);
+      par.AddAt(cone->GetRmin1(), 1);
+      par.AddAt(cone->GetRmax1(), 2);
+      par.AddAt(cone->GetRmin2(), 3);
+      par.AddAt(cone->GetRmax2(), 4);
       return kTRUE;
    }
-   if (class_type==TGeoConeSeg::Class()) {
+   if (class_type == TGeoConeSeg::Class()) {
       shapeType = "CONS";
       npar = 7;
       par.Set(npar);
-      TGeoConeSeg *cons = (TGeoConeSeg*)shape;
-      par.AddAt(cons->GetDz(),0);
-      par.AddAt(cons->GetRmin1(),1);
-      par.AddAt(cons->GetRmax1(),2);
-      par.AddAt(cons->GetRmin2(),3);
-      par.AddAt(cons->GetRmax2(),4);
-      par.AddAt(cons->GetPhi1(),5);
-      par.AddAt(cons->GetPhi2(),6);
+      TGeoConeSeg *cons = (TGeoConeSeg *)shape;
+      par.AddAt(cons->GetDz(), 0);
+      par.AddAt(cons->GetRmin1(), 1);
+      par.AddAt(cons->GetRmax1(), 2);
+      par.AddAt(cons->GetRmin2(), 3);
+      par.AddAt(cons->GetRmax2(), 4);
+      par.AddAt(cons->GetPhi1(), 5);
+      par.AddAt(cons->GetPhi2(), 6);
       return kTRUE;
    }
-   if (class_type==TGeoSphere::Class()) {
+   if (class_type == TGeoSphere::Class()) {
       shapeType = "SPHE";
       npar = 6;
       par.Set(npar);
-      TGeoSphere *sphe = (TGeoSphere*)shape;
-      par.AddAt(sphe->GetRmin(),0);
-      par.AddAt(sphe->GetRmax(),1);
-      par.AddAt(sphe->GetTheta1(),2);
-      par.AddAt(sphe->GetTheta2(),3);
-      par.AddAt(sphe->GetPhi1(),4);
-      par.AddAt(sphe->GetPhi2(),5);
+      TGeoSphere *sphe = (TGeoSphere *)shape;
+      par.AddAt(sphe->GetRmin(), 0);
+      par.AddAt(sphe->GetRmax(), 1);
+      par.AddAt(sphe->GetTheta1(), 2);
+      par.AddAt(sphe->GetTheta2(), 3);
+      par.AddAt(sphe->GetPhi1(), 4);
+      par.AddAt(sphe->GetPhi2(), 5);
       return kTRUE;
    }
-   if (class_type==TGeoPara::Class()) {
+   if (class_type == TGeoPara::Class()) {
       shapeType = "PARA";
       npar = 6;
       par.Set(npar);
-      TGeoPara *para = (TGeoPara*)shape;
-      par.AddAt(para->GetX(),0);
-      par.AddAt(para->GetY(),1);
-      par.AddAt(para->GetZ(),2);
-      par.AddAt(para->GetTxy(),3);
-      par.AddAt(para->GetTxz(),4);
-      par.AddAt(para->GetTyz(),5);
+      TGeoPara *para = (TGeoPara *)shape;
+      par.AddAt(para->GetX(), 0);
+      par.AddAt(para->GetY(), 1);
+      par.AddAt(para->GetZ(), 2);
+      par.AddAt(para->GetTxy(), 3);
+      par.AddAt(para->GetTxz(), 4);
+      par.AddAt(para->GetTyz(), 5);
       return kTRUE;
    }
-   if (class_type==TGeoPgon::Class()) {
+   if (class_type == TGeoPgon::Class()) {
       shapeType = "PGON";
-      TGeoPgon *pgon = (TGeoPgon*)shape;
+      TGeoPgon *pgon = (TGeoPgon *)shape;
       Int_t nz = pgon->GetNz();
       const Double_t *rmin = pgon->GetRmin();
       const Double_t *rmax = pgon->GetRmax();
       const Double_t *z = pgon->GetZ();
-      npar = 4 + 3*nz;
+      npar = 4 + 3 * nz;
       par.Set(npar);
-      par.AddAt(pgon->GetPhi1(),0);
-      par.AddAt(pgon->GetDphi(),1);
-      par.AddAt(pgon->GetNedges(),2);
-      par.AddAt(pgon->GetNz(),3);
-      for (Int_t i=0; i<nz; i++) {
-         par.AddAt(z[i], 4+3*i);
-         par.AddAt(rmin[i], 4+3*i+1);
-         par.AddAt(rmax[i], 4+3*i+2);
+      par.AddAt(pgon->GetPhi1(), 0);
+      par.AddAt(pgon->GetDphi(), 1);
+      par.AddAt(pgon->GetNedges(), 2);
+      par.AddAt(pgon->GetNz(), 3);
+      for (Int_t i = 0; i < nz; i++) {
+         par.AddAt(z[i], 4 + 3 * i);
+         par.AddAt(rmin[i], 4 + 3 * i + 1);
+         par.AddAt(rmax[i], 4 + 3 * i + 2);
       }
       return kTRUE;
    }
-   if (class_type==TGeoPcon::Class()) {
+   if (class_type == TGeoPcon::Class()) {
       shapeType = "PCON";
-      TGeoPcon *pcon = (TGeoPcon*)shape;
+      TGeoPcon *pcon = (TGeoPcon *)shape;
       Int_t nz = pcon->GetNz();
       const Double_t *rmin = pcon->GetRmin();
       const Double_t *rmax = pcon->GetRmax();
       const Double_t *z = pcon->GetZ();
-      npar = 3 + 3*nz;
+      npar = 3 + 3 * nz;
       par.Set(npar);
-      par.AddAt(pcon->GetPhi1(),0);
-      par.AddAt(pcon->GetDphi(),1);
-      par.AddAt(pcon->GetNz(),2);
-      for (Int_t i=0; i<nz; i++) {
-         par.AddAt(z[i], 3+3*i);
-         par.AddAt(rmin[i], 3+3*i+1);
-         par.AddAt(rmax[i], 3+3*i+2);
+      par.AddAt(pcon->GetPhi1(), 0);
+      par.AddAt(pcon->GetDphi(), 1);
+      par.AddAt(pcon->GetNz(), 2);
+      for (Int_t i = 0; i < nz; i++) {
+         par.AddAt(z[i], 3 + 3 * i);
+         par.AddAt(rmin[i], 3 + 3 * i + 1);
+         par.AddAt(rmax[i], 3 + 3 * i + 2);
       }
       return kTRUE;
    }
-   if (class_type==TGeoEltu::Class()) {
+   if (class_type == TGeoEltu::Class()) {
       shapeType = "ELTU";
       npar = 3;
       par.Set(npar);
-      TGeoEltu *eltu = (TGeoEltu*)shape;
-      par.AddAt(eltu->GetA(),0);
-      par.AddAt(eltu->GetB(),1);
-      par.AddAt(eltu->GetDz(),2);
+      TGeoEltu *eltu = (TGeoEltu *)shape;
+      par.AddAt(eltu->GetA(), 0);
+      par.AddAt(eltu->GetB(), 1);
+      par.AddAt(eltu->GetDz(), 2);
       return kTRUE;
    }
-   if (class_type==TGeoHype::Class()) {
+   if (class_type == TGeoHype::Class()) {
       shapeType = "HYPE";
       npar = 5;
       par.Set(npar);
-      TGeoHype *hype = (TGeoHype*)shape;
-      par.AddAt(TMath::Sqrt(hype->RadiusHypeSq(0.,kTRUE)),0);
-      par.AddAt(TMath::Sqrt(hype->RadiusHypeSq(0.,kFALSE)),1);
-      par.AddAt(hype->GetDZ(),2);
-      par.AddAt(hype->GetStIn(),3);
-      par.AddAt(hype->GetStOut(),4);
+      TGeoHype *hype = (TGeoHype *)shape;
+      par.AddAt(TMath::Sqrt(hype->RadiusHypeSq(0., kTRUE)), 0);
+      par.AddAt(TMath::Sqrt(hype->RadiusHypeSq(0., kFALSE)), 1);
+      par.AddAt(hype->GetDZ(), 2);
+      par.AddAt(hype->GetStIn(), 3);
+      par.AddAt(hype->GetStOut(), 4);
       return kTRUE;
    }
-   if (class_type==TGeoGtra::Class()) {
+   if (class_type == TGeoGtra::Class()) {
       shapeType = "GTRA";
       npar = 12;
       par.Set(npar);
-      TGeoGtra *trap = (TGeoGtra*)shape;
-      Double_t tth = TMath::Tan(trap->GetTheta()*TMath::DegToRad());
-      par.AddAt(trap->GetDz(),0);
-      par.AddAt(tth*TMath::Cos(trap->GetPhi()*TMath::DegToRad()),1);
-      par.AddAt(tth*TMath::Sin(trap->GetPhi()*TMath::DegToRad()),2);
-      par.AddAt(trap->GetH1(),3);
-      par.AddAt(trap->GetBl1(),4);
-      par.AddAt(trap->GetTl1(),5);
-      par.AddAt(TMath::Tan(trap->GetAlpha1()*TMath::DegToRad()),6);
-      par.AddAt(trap->GetH2(),7);
-      par.AddAt(trap->GetBl2(),8);
-      par.AddAt(trap->GetTl2(),9);
-      par.AddAt(TMath::Tan(trap->GetAlpha2()*TMath::DegToRad()),10);
-      par.AddAt(trap->GetTwistAngle(),11);
+      TGeoGtra *trap = (TGeoGtra *)shape;
+      Double_t tth = TMath::Tan(trap->GetTheta() * TMath::DegToRad());
+      par.AddAt(trap->GetDz(), 0);
+      par.AddAt(tth * TMath::Cos(trap->GetPhi() * TMath::DegToRad()), 1);
+      par.AddAt(tth * TMath::Sin(trap->GetPhi() * TMath::DegToRad()), 2);
+      par.AddAt(trap->GetH1(), 3);
+      par.AddAt(trap->GetBl1(), 4);
+      par.AddAt(trap->GetTl1(), 5);
+      par.AddAt(TMath::Tan(trap->GetAlpha1() * TMath::DegToRad()), 6);
+      par.AddAt(trap->GetH2(), 7);
+      par.AddAt(trap->GetBl2(), 8);
+      par.AddAt(trap->GetTl2(), 9);
+      par.AddAt(TMath::Tan(trap->GetAlpha2() * TMath::DegToRad()), 10);
+      par.AddAt(trap->GetTwistAngle(), 11);
       return kTRUE;
    }
-   if (class_type==TGeoCtub::Class()) {
+   if (class_type == TGeoCtub::Class()) {
       shapeType = "CTUB";
       npar = 11;
       par.Set(npar);
-      TGeoCtub *ctub = (TGeoCtub*)shape;
+      TGeoCtub *ctub = (TGeoCtub *)shape;
       const Double_t *lx = ctub->GetNlow();
       const Double_t *tx = ctub->GetNhigh();
-      par.AddAt(ctub->GetRmin(),0);
-      par.AddAt(ctub->GetRmax(),1);
-      par.AddAt(ctub->GetDz(),2);
-      par.AddAt(ctub->GetPhi1(),3);
-      par.AddAt(ctub->GetPhi2(),4);
-      par.AddAt(lx[0],5);
-      par.AddAt(lx[1],6);
-      par.AddAt(lx[2],7);
-      par.AddAt(tx[0],8);
-      par.AddAt(tx[1],9);
-      par.AddAt(tx[2],10);
+      par.AddAt(ctub->GetRmin(), 0);
+      par.AddAt(ctub->GetRmax(), 1);
+      par.AddAt(ctub->GetDz(), 2);
+      par.AddAt(ctub->GetPhi1(), 3);
+      par.AddAt(ctub->GetPhi2(), 4);
+      par.AddAt(lx[0], 5);
+      par.AddAt(lx[1], 6);
+      par.AddAt(lx[2], 7);
+      par.AddAt(tx[0], 8);
+      par.AddAt(tx[1], 9);
+      par.AddAt(tx[2], 10);
       return kTRUE;
-
    }
-   Error("GetShape","Getting shape parameters for shape %s not implemented", shape->ClassName());
+   Error("GetShape", "Getting shape parameters for shape %s not implemented", shape->ClassName());
    return kFALSE;
 }
 
@@ -999,25 +991,25 @@ Bool_t TGeoMCGeometry::GetShape(const TString &volumePath,TString &shapeType,
 /// - Return:
 ///   - kTRUE if no errors
 
-Bool_t TGeoMCGeometry::GetMaterial(const TString &volumeName,
-                            TString &name,Int_t &imat,
-                            Double_t &a,Double_t &z,Double_t &dens,
-                            Double_t &radl,Double_t &inter,TArrayD &par)
+Bool_t TGeoMCGeometry::GetMaterial(const TString &volumeName, TString &name, Int_t &imat, Double_t &a, Double_t &z,
+                                   Double_t &dens, Double_t &radl, Double_t &inter, TArrayD &par)
 {
    TGeoVolume *vol = GetTGeoManager()->GetVolume(volumeName.Data());
-   if (!vol) return kFALSE;
+   if (!vol)
+      return kFALSE;
    TGeoMedium *med = vol->GetMedium();
-   if (!med) return kFALSE;
+   if (!med)
+      return kFALSE;
    TGeoMaterial *mat = med->GetMaterial();
    imat = mat->GetUniqueID();
    name = mat->GetName();
    name = name.Strip(TString::kTrailing, '$');
-   a      = mat->GetA();
-   z      = mat->GetZ();
-   dens   = mat->GetDensity();
-   radl   = mat->GetRadLen();
-   inter  = mat->GetIntLen(); // WARNING: THIS IS NOT COMPUTED NATIVELY BY TGEO
-   par.Set(0); // NO USER PARAMETERS STORED IN TGEO
+   a = mat->GetA();
+   z = mat->GetZ();
+   dens = mat->GetDensity();
+   radl = mat->GetRadLen();
+   inter = mat->GetIntLen(); // WARNING: THIS IS NOT COMPUTED NATIVELY BY TGEO
+   par.Set(0);               // NO USER PARAMETERS STORED IN TGEO
    return kTRUE;
 }
 
@@ -1045,30 +1037,29 @@ Bool_t TGeoMCGeometry::GetMaterial(const TString &volumeName,
 /// - Return:
 ///   - kTRUE if there where no errors
 
-Bool_t TGeoMCGeometry::GetMedium(const TString &volumeName,TString &name,
-                          Int_t &imed,Int_t &nmat,Int_t &isvol,Int_t &ifield,
-                          Double_t &fieldm,Double_t &tmaxfd,Double_t &stemax,
-                          Double_t &deemax,Double_t &epsil, Double_t &stmin,
-                          TArrayD &par)
+Bool_t TGeoMCGeometry::GetMedium(const TString &volumeName, TString &name, Int_t &imed, Int_t &nmat, Int_t &isvol,
+                                 Int_t &ifield, Double_t &fieldm, Double_t &tmaxfd, Double_t &stemax, Double_t &deemax,
+                                 Double_t &epsil, Double_t &stmin, TArrayD &par)
 {
    TGeoVolume *vol = GetTGeoManager()->GetVolume(volumeName.Data());
-   if (!vol) return kFALSE;
+   if (!vol)
+      return kFALSE;
    TGeoMedium *med = vol->GetMedium();
-   if (!med) return kFALSE;
+   if (!med)
+      return kFALSE;
    TGeoMaterial *mat = med->GetMaterial();
    nmat = mat->GetUniqueID();
    imed = med->GetId();
    name = med->GetName();
    name = name.Strip(TString::kTrailing, '$');
    par.Set(0); // NO USER PARAMETERS IN TGEO
-   isvol  = (Int_t)med->GetParam(0);
+   isvol = (Int_t)med->GetParam(0);
    ifield = (Int_t)med->GetParam(1);
    fieldm = med->GetParam(2);
    tmaxfd = med->GetParam(3);
    stemax = med->GetParam(4);
    deemax = med->GetParam(5);
-   epsil  = med->GetParam(6);
-   stmin  = med->GetParam(7);
+   epsil = med->GetParam(6);
+   stmin = med->GetParam(7);
    return kTRUE;
 }
-

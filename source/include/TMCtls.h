@@ -16,6 +16,8 @@
  * For the list of contributors see $ROOTSYS/README/CREDITS.             *
  *************************************************************************/
 
+// clang-format off
+
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *

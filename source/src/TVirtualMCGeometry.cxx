@@ -35,26 +35,18 @@ ClassImp(TVirtualMCGeometry);
 /// Standard constructor
 ///
 
-TVirtualMCGeometry::TVirtualMCGeometry(const char *name, const char *title)
-  : TNamed(name,title)
-{
-}
+TVirtualMCGeometry::TVirtualMCGeometry(const char *name, const char *title) : TNamed(name, title) {}
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
 /// Default constructor
 ///
 
-TVirtualMCGeometry::TVirtualMCGeometry()
-  : TNamed()
-{
-}
+TVirtualMCGeometry::TVirtualMCGeometry() : TNamed() {}
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
 /// Destructor
 ///
 
-TVirtualMCGeometry::~TVirtualMCGeometry()
-{
-}
+TVirtualMCGeometry::~TVirtualMCGeometry() {}

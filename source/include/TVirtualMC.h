@@ -113,12 +113,12 @@ public:
    /// of a given kind into the molecule of the compound.
    /// In this case, wmat in output is changed to relative
    /// weights.
-   virtual void
-   Mixture(Int_t &kmat, const char *name, Float_t *a, Float_t *z, Double_t dens, Int_t nlmat, Float_t *wmat) = 0;
+   virtual void Mixture(Int_t &kmat, const char *name, Float_t *a, Float_t *z, Double_t dens, Int_t nlmat,
+                        Float_t *wmat) = 0;
 
    /// The same as previous but in double precision
-   virtual void
-   Mixture(Int_t &kmat, const char *name, Double_t *a, Double_t *z, Double_t dens, Int_t nlmat, Double_t *wmat) = 0;
+   virtual void Mixture(Int_t &kmat, const char *name, Double_t *a, Double_t *z, Double_t dens, Int_t nlmat,
+                        Double_t *wmat) = 0;
 
    /// Define a medium.
    /// - kmed      tracking medium number assigned
@@ -220,8 +220,8 @@ public:
    /// If numed is 0, numed of mother is taken.
    /// ndvmx is the expected maximum number of divisions
    /// (If 0, no protection tests are performed in Geant3)
-   virtual void
-   Gsdvt2(const char *name, const char *mother, Double_t step, Int_t iaxis, Double_t c0, Int_t numed, Int_t ndvmx) = 0;
+   virtual void Gsdvt2(const char *name, const char *mother, Double_t step, Int_t iaxis, Double_t c0, Int_t numed,
+                       Int_t ndvmx) = 0;
 
    /// Flag volume name whose contents will have to be ordered
    /// along axis iax, by setting the search flag to -iax
@@ -269,12 +269,12 @@ public:
    /// - rindex      Refraction index (if=0 metal)
    /// - aspline     Enable spline interpolation of the absco data (Geant4 only)
    /// - rspline     Enable spline interpolation of the rindex data (Geant4 only)
-   virtual void
-   SetCerenkov(Int_t itmed, Int_t npckov, Float_t *ppckov, Float_t *absco, Float_t *effic, Float_t *rindex, Bool_t aspline = false, Bool_t rspline = false) = 0;
+   virtual void SetCerenkov(Int_t itmed, Int_t npckov, Float_t *ppckov, Float_t *absco, Float_t *effic, Float_t *rindex,
+                            Bool_t aspline = false, Bool_t rspline = false) = 0;
 
    /// The same as previous but in double precision
-   virtual void
-   SetCerenkov(Int_t itmed, Int_t npckov, Double_t *ppckov, Double_t *absco, Double_t *effic, Double_t *rindex, Bool_t aspline = false, Bool_t rspline = false) = 0;
+   virtual void SetCerenkov(Int_t itmed, Int_t npckov, Double_t *ppckov, Double_t *absco, Double_t *effic,
+                            Double_t *rindex, Bool_t aspline = false, Bool_t rspline = false) = 0;
 
    //
    // functions for definition of surfaces
@@ -319,8 +319,8 @@ public:
    /// - createNewKey  enable user defined property
    /// - spline        enable spline interpolation of the data
    /// (Geant4 only)
-   virtual void
-   SetMaterialProperty(Int_t itmed, const char *propertyName, Int_t np, Double_t *pp, Double_t *values, Bool_t createNewKey = false, Bool_t spline = false) = 0;
+   virtual void SetMaterialProperty(Int_t itmed, const char *propertyName, Int_t np, Double_t *pp, Double_t *values,
+                                    Bool_t createNewKey = false, Bool_t spline = false) = 0;
 
    /// Define material property via a value
    /// - itmed         tracking medium id
@@ -338,8 +338,8 @@ public:
    /// - createNewKey  enable user defined property
    /// - spline        enable spline interpolation of the data
    /// (Geant4 only)
-   virtual void
-   SetMaterialProperty(const char *surfaceName, const char *propertyName, Int_t np, Double_t *pp, Double_t *values, Bool_t createNewKey = false, Bool_t spline = false) = 0;
+   virtual void SetMaterialProperty(const char *surfaceName, const char *propertyName, Int_t np, Double_t *pp,
+                                    Double_t *values, Bool_t createNewKey = false, Bool_t spline = false) = 0;
 
    //
    // functions for access to geometry
@@ -914,10 +914,10 @@ private:
 
 private:
    /// Unique identification of this VMC.
-   /// Don't use TObject::SetUniqueId() since this is used to uniquely identify 
+   /// Don't use TObject::SetUniqueId() since this is used to uniquely identify
    //  TObjects in in general.
    /// An ID is given by the running TVirtualMCApp and not by the user.
-   Int_t fId; 
+   Int_t fId;
 
    TVirtualMCStack *fStack;        //!< Particles stack
    TMCManagerStack *fManagerStack; //!< Stack handled by the TMCManager

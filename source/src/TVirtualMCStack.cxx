@@ -30,12 +30,9 @@ ClassImp(TVirtualMCStack);
 ////////////////////////////////////////////////////////////////////////////////
 /// Default constructor
 
-TVirtualMCStack::TVirtualMCStack()
-  : TObject()
-{}
+TVirtualMCStack::TVirtualMCStack() : TObject() {}
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Destructor
 
-TVirtualMCStack::~TVirtualMCStack()
-{}
+TVirtualMCStack::~TVirtualMCStack() {}

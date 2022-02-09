@@ -24,9 +24,10 @@
 //
 #include "Rtypes.h"
 
+// clang-format off
+
 /// Optical surface models
-enum EMCOpSurfaceModel
-{
+enum EMCOpSurfaceModel {
    kGlisur,                ///< original GEANT3 model
    kUnified,               ///< UNIFIED model
    kLUT,                   ///< Look-Up-Table model (LBNL model)
@@ -35,8 +36,7 @@ enum EMCOpSurfaceModel
 };
 
 /// Optical surface types
-enum EMCOpSurfaceType
-{
+enum EMCOpSurfaceType {
    kDielectric_metal,      ///< dielectric-metal interface
    kDielectric_dielectric, ///< dielectric-dielectric interface
    kDielectric_LUT,        ///< dielectric-Look-Up-Table interface
@@ -47,8 +47,7 @@ enum EMCOpSurfaceType
 };
 
 /// Optical surface finish types
-enum EMCOpSurfaceFinish
-{
+enum EMCOpSurfaceFinish {
    kPolished,              ///<  smooth perfectly polished surface
    kPolishedfrontpainted,  ///<  smooth top-layer (front) paint
    kPolishedbackpainted,   ///<  same is 'polished' but with a back-paint
@@ -99,7 +98,6 @@ enum EMCOpSurfaceFinish
    kPolishedESRGrease_LUT, ///<  polished surface wrapped with ESR
                            ///   and coupled with optical grease
    kDetector_LUT           ///   polished surface with optical grease
-
 };
 
 #endif //ROOT_TMCOPtical

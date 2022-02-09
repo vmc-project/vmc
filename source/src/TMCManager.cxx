@@ -99,17 +99,17 @@ void TMCManager::Register(TVirtualMC *mc)
       }
    }
    if (!fGeometryConstructed) {
-     fApplication->ConstructGeometry();
-     fApplication->MisalignGeometry();
-     fApplication->ConstructOpGeometry();
-     if (!gGeoManager->IsClosed()) {
-        // Setting the top volume is the duty of the user as well as closing it.
-        // Failing here is just an additional cross check. If not closed the user
-        // might have forgotten something.
-        ::Fatal("TMCManager::Register", "The TGeo geometry is not closed. Please check whether you just have to close "
-                                        "it or whether something was forgotten.");
-     }
-     fGeometryConstructed = kTRUE;
+      fApplication->ConstructGeometry();
+      fApplication->MisalignGeometry();
+      fApplication->ConstructOpGeometry();
+      if (!gGeoManager->IsClosed()) {
+         // Setting the top volume is the duty of the user as well as closing it.
+         // Failing here is just an additional cross check. If not closed the user
+         // might have forgotten something.
+         ::Fatal("TMCManager::Register", "The TGeo geometry is not closed. Please check whether you just have to close "
+                                         "it or whether something was forgotten.");
+      }
+      fGeometryConstructed = kTRUE;
    }
    // Set id and register.
    mc->SetId(fEngines.size());
@@ -136,7 +136,6 @@ void TMCManager::Register(TVirtualMCApplication *application)
    ::Info("TMCManager::Register", "Register user application and construct geometry");
    fApplication = application;
    // TODO Can these 3 functions can be called directly here? Or could any of these depend on an implemented VMC?
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -342,19 +341,19 @@ void TMCManager::TransferTrack(TVirtualMC *mc)
 
 Bool_t TMCManager::RestoreGeometryState(Int_t trackId, Bool_t checkTrackIdRange)
 {
-  if (checkTrackIdRange && (trackId < 0 || trackId >= static_cast<Int_t>(fParticles.size()) || !fParticles[trackId])) {
-     return kFALSE;
-  }
-  UInt_t& geoStateId = fParticlesStatus[trackId]->fGeoStateIndex;
-  if(geoStateId == 0) {
-    return kFALSE;
-  }
-  const TGeoBranchArray* branchArray = fBranchArrayContainer.GetGeoState(geoStateId);
-  branchArray->UpdateNavigator(gGeoManager->GetCurrentNavigator());
-  fBranchArrayContainer.FreeGeoState(geoStateId);
-  gGeoManager->SetOutside(fParticlesStatus[trackId]->fIsOutside);
-  geoStateId = 0;
-  return kTRUE;
+   if (checkTrackIdRange && (trackId < 0 || trackId >= static_cast<Int_t>(fParticles.size()) || !fParticles[trackId])) {
+      return kFALSE;
+   }
+   UInt_t &geoStateId = fParticlesStatus[trackId]->fGeoStateIndex;
+   if (geoStateId == 0) {
+      return kFALSE;
+   }
+   const TGeoBranchArray *branchArray = fBranchArrayContainer.GetGeoState(geoStateId);
+   branchArray->UpdateNavigator(gGeoManager->GetCurrentNavigator());
+   fBranchArrayContainer.FreeGeoState(geoStateId);
+   gGeoManager->SetOutside(fParticlesStatus[trackId]->fIsOutside);
+   geoStateId = 0;
+   return kTRUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -364,7 +363,7 @@ Bool_t TMCManager::RestoreGeometryState(Int_t trackId, Bool_t checkTrackIdRange)
 
 Bool_t TMCManager::RestoreGeometryState()
 {
-  return RestoreGeometryState(fStacks[fCurrentEngine->GetId()]->GetCurrentTrackNumber(), kFALSE);
+   return RestoreGeometryState(fStacks[fCurrentEngine->GetId()]->GetCurrentTrackNumber(), kFALSE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

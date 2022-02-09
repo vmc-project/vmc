@@ -28,18 +28,17 @@
 #include "Rtypes.h"
 
 /// VMC particle type codes
-enum TMCParticleType
-{
-  kPTGamma,          ///< particle tracked as gamma
-  kPTElectron,       ///< particle tracked as electron
-  kPTNeutron,        ///< particle tracked as neutron
-  kPTHadron,         ///< particle tracked as hadron
-  kPTMuon,           ///< particle tracked as muon
-  kPTGeantino,       ///< particle tracked as geantino
-  kPTChargedGeantino,///< particle tracked as charged geantino
-  kPTOpticalPhoton,  ///< particle tracked as light photon
-  kPTIon,            ///< particle tracked as heavy ion
-  kPTUndefined       ///< unknown particle type
+enum TMCParticleType {
+   kPTGamma,           ///< particle tracked as gamma
+   kPTElectron,        ///< particle tracked as electron
+   kPTNeutron,         ///< particle tracked as neutron
+   kPTHadron,          ///< particle tracked as hadron
+   kPTMuon,            ///< particle tracked as muon
+   kPTGeantino,        ///< particle tracked as geantino
+   kPTChargedGeantino, ///< particle tracked as charged geantino
+   kPTOpticalPhoton,   ///< particle tracked as light photon
+   kPTIon,             ///< particle tracked as heavy ion
+   kPTUndefined        ///< unknown particle type
 };
 
 #endif

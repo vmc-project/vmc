@@ -33,6 +33,8 @@
 ///
 /// \author I. Hrivnacova; IPN Orsay
 
+// clang-format off
+
 //
 // ********************************************************************
 // * License and Disclaimer                                           *

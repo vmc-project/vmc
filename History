@@ -8,6 +8,28 @@ See https://github.com/vmc-project/vmc for full licensing information.
 
 Tags (history):
 ===============
+  10/02/2022
+  v2-0:
+  - Extended Optical surface models, types and finish type enums
+    to cover all values defined in Geant4 11.0
+  - Extended TVirtualMC functions SetCerenkov() and SetMaterialProperty()
+    to allow enabling of spline interpolation of the data and user
+    properties
+  - Make the TVirtualMC interface function =0 and removed
+    the default implementation
+  - Removed deprecated TVirtualMCApplication functions for MT:
+    - virtual void InitForWorker() const;
+    - virtual void BeginWorkerRun() const;
+    - virtual void FinishWorkerRun() const;
+    The non-constant functions should be used instead;
+    - virtual void InitOnWorker();
+    - virtual void BeginRunOnWorker();
+    - virtual void FinishRunOnWorker();
+  - Updated TMCAutoLock.h, TMCtls.h
+  - Added TMCRootManager class previously provided in geant4_vmc
+
+  Tested with ROOT 6.24/06
+
   03/12/2021
   v1-1:
   - Update in cmake: export install prefix

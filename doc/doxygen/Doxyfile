@@ -758,9 +758,9 @@ WARN_LOGFILE           =
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = $(TRAVIS_BUILD_DIR)/README.md \
-                         $(TRAVIS_BUILD_DIR)/README.multiple.md \
-                         $(TRAVIS_BUILD_DIR)/source \
+INPUT                  = README.md \
+                         README.multiple.md \
+                         source \
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

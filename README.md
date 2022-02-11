@@ -1,4 +1,4 @@
-# VMC Core (vmc)
+# VMC Core
 
 Virtual Monte Carlo (VMC) defines a detector simulation framework that allows to run different simulation Monte Carlo without changing the user code and therefore the input and output format as well as the geometry and detector response definition.
 

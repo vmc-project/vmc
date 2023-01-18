@@ -116,7 +116,7 @@ public:
    virtual void Mixture(Int_t &kmat, const char *name, Float_t *a, Float_t *z, Double_t dens, Int_t nlmat,
                         Float_t *wmat) = 0;
 
-   /// The same as previous but in double precisio
+   /// The same as previous but in double precision
    virtual void Mixture(Int_t &kmat, const char *name, Double_t *a, Double_t *z, Double_t dens, Int_t nlmat,
                         Double_t *wmat) = 0;
 

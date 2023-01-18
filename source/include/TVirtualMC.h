@@ -706,7 +706,7 @@ public:
    /// Return the length of the current track from its origin (in cm)
    virtual Double_t TrackLength() const = 0;
 
-   /// Return the current time of flight of the track being transported
+   /// Return the current time of flight of the track being transported (in s)
    virtual Double_t TrackTime() const = 0;
 
    /// Return the energy lost in the current step

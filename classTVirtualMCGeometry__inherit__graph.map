@@ -1,0 +1,5 @@
+<map id="TVirtualMCGeometry" name="TVirtualMCGeometry">
+<area shape="rect" id="node1" title="Interface to Monte Carlo geometry construction." alt="" coords="5,79,148,104"/>
+<area shape="rect" id="node3" href="$classTGeoMCGeometry.html" title="Implementation of the TVirtualMCGeometry interface for building TGeo geometry." alt="" coords="11,152,142,177"/>
+<area shape="rect" id="node2" title=" " alt="" coords="41,5,113,31"/>
+</map>

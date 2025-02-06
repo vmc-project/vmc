@@ -14,7 +14,7 @@
 ///
 /// \author I. Hrivnacova; IJCLab, Orsay
 
-#define VMC_RELEASE "2.0"
-#define VMC_RELEASE_DATE "10 February 2022"
+#define VMC_RELEASE "2.1"
+#define VMC_RELEASE_DATE "6 February 2025"
 
 #endif // TMC_VERSION_H

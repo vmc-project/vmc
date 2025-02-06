@@ -8,6 +8,13 @@ See https://github.com/vmc-project/vmc for full licensing information.
 
 Tags (history):
 ===============
+  06/02/2025
+  v2-1:
+  - Updates in documentation (PR #16, #19)
+  - Updated CMake minimum version (PR #21)
+
+  Tested with ROOT 6.32/08
+
   10/02/2022
   v2-0:
   - Extended Optical surface models, types and finish type enums

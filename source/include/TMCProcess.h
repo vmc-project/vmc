@@ -24,7 +24,7 @@
 //
 #include "Rtypes.h"
 
-const Int_t kMaxMCProcess = 50;
+const Int_t kMaxMCProcess = 51;
 
 /// VMC physics process codes
 enum TMCProcess {
@@ -92,7 +92,8 @@ enum TMCProcess {
    kPTransportation = 43,     ///< Transportation
    kPUserDefined = 47,        ///< User defined process
 
-   kPNoProcess = 44           ///< unknown process
+   kPNoProcess = 44,          ///< unknown process
+   kPRadDecay = 50            ///< radioactive decay 
    // clang-format on
 };
 
@@ -147,7 +148,8 @@ static const char *const TMCProcessName[kMaxMCProcess] = {
    "Photo nuclear interaction",
    "User defined process",
    "Optical photon wavelength shifting",
-   "Transition radiation"
+   "Transition radiation",
+   "Radioactive Decay"
    // clang-format on
 };
 

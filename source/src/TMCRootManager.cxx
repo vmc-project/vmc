@@ -20,12 +20,35 @@
 #include "TThread.h"
 #include "TTree.h"
 
+#include <atomic>
 #include <cstdio>
+#include <thread>
+#include <vector>
+
 
 namespace {
 // Define mutexes per operation which modify shared data
 TMCMutex createMutex = TMCMUTEX_INITIALIZER;
 TMCMutex deleteMutex = TMCMUTEX_INITIALIZER;
+
+// A global counter to assign numbers sequentially
+std::atomic<int> global_thread_counter{0};
+
+int get_clean_thread_id() {
+    // This variable is unique to each thread.
+    // It initializes ONLY the first time this function is called on that thread.
+    thread_local int my_id = global_thread_counter++;
+    return my_id;
+}
+
+void threadWorker() {
+    // No arguments passed, but the thread can still get its 0, 1, 2 ID
+    std::cout << "Thread " << std::this_thread::get_id()
+              << " assigned itself Custom ID: " << get_clean_thread_id() << "\n";
+}
+
+
+
 } // namespace
 
 //
@@ -55,7 +78,7 @@ TMCRootManager::TMCRootManager(const char *projectName, TMCRootManager::FileMode
    /// Standard constructor
    /// \param projectName  The project name (passed as the Root tree name)
    /// \param fileMode     Option for opening Root file (read or write mode)
-   /// \param threadRank   The thread Id (-1 when sequential mode)
+   /// \param threadRank   >0 when MT mode, -1 when sequential mode
 
    if (fgDebug)
       printf("TMCRootManager::TMCRootManager %p \n", this);
@@ -119,9 +142,10 @@ TMCRootManager::~TMCRootManager()
 void TMCRootManager::OpenFile(const char *projectName, FileMode fileMode, Int_t threadRank)
 {
    TString fileName(projectName);
-   if (threadRank >= 0) {
+   if (threadRank > 0) {
+      Int_t threadId = get_clean_thread_id();
       fileName += "_";
-      fileName += threadRank;
+      fileName += threadId;
    }
    fileName += ".root";
 

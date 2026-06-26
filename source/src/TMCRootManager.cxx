@@ -15,10 +15,8 @@
 #include "TMCRootManager.h"
 #include "Riostream.h"
 #include "TError.h"
-#include "TFile.h"
 #include "TMCAutoLock.h"
 #include "TThread.h"
-#include "TTree.h"
 
 #include <atomic>
 #include <cstdio>
@@ -147,11 +145,7 @@ TMCRootManager::~TMCRootManager()
 //_____________________________________________________________________________
 void TMCRootManager::OpenFile(const char *projectName, FileMode fileMode, Int_t threadRank)
 {
-   TString fileName = Form("T%s",projectName);
-   if (fStorageMode == kRNTuple) {
-      fileName = Form("R%s",projectName);
-   }
-
+   TString fileName(projectName);
    if (threadRank > 0) {
       Int_t threadId = get_clean_thread_id();
       fileName += "_";

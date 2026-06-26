@@ -99,8 +99,8 @@ private:
 
    // data members
    Int_t fId;        // This manager ID
-   TFile *fFile {0};     // Root output file
-   TTree *fTree {0};     // Root output tree
+   TFile *fFile {nullptr};     // Root output file
+   TTree *fTree {nullptr};     // Root output tree
 
    std::string fStorageName {};
    std::vector<std::pair<std::string, void*>> fNameAddress;

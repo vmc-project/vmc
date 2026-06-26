@@ -18,9 +18,22 @@
 #include "TMCtls.h"
 #include <Rtypes.h>
 
+#include "TFile.h"
+#include "TTree.h"
+#include <ROOT/REntry.hxx>
+#include <ROOT/RField.hxx>
+#include <ROOT/RNTuple.hxx>
+#include <ROOT/RNTupleFillStatus.hxx>
+#include <ROOT/RNTupleModel.hxx>
+#include <ROOT/RNTupleParallelWriter.hxx>
+#include <ROOT/RNTupleWriter.hxx>
+
 class TParticle;
-class TFile;
-class TTree;
+
+using ROOT::RNTupleFillStatus;
+using REntry = ROOT::REntry;
+using RNTupleModel = ROOT::RNTupleModel;
+using RNTupleWriter = ROOT::RNTupleWriter;
 
 /// \brief The Root IO manager for VMC examples for both sequential and
 /// multi-threaded applications.
@@ -35,6 +48,10 @@ public:
       kRead, // Read mode
       kWrite // Write mode
    };
+   enum StorageMode {
+      kTTree,  // TTree storage
+      kRNTuple // RNTuple storage
+   };
 
 public:
    // static access method
@@ -45,9 +62,12 @@ public:
    static Bool_t GetDebug();
 
    TMCRootManager(const char *projectName, FileMode fileMode = kWrite, Int_t threadRank = -1);
+   TMCRootManager(const char *projectName, StorageMode storageMode, FileMode fileMode = kWrite, Int_t threadRank = -1);
    virtual ~TMCRootManager();
 
    // methods
+   template <typename T>
+   void Register(const char *name, T *&obj);
    void Register(const char *name, const char *className, void *objAddress);
    void Register(const char *name, const char *className, const void *objAddress);
    void Fill();
@@ -55,6 +75,8 @@ public:
    void Close();
    void WriteAndClose();
    void ReadEvent(Int_t i);
+
+   void CreateRNTuple();
 
 private:
    // not implemented
@@ -76,10 +98,19 @@ private:
    void OpenFile(const char *projectName, FileMode fileMode, Int_t threadRank);
 
    // data members
-   Int_t fId;        // This manager ID
-   TFile *fFile;     // Root output file
-   TTree *fTree;     // Root output tree
-   Bool_t fIsClosed; // Info whether its file was closed
+   Int_t fId;             // This manager ID
+   TFile *fFile{nullptr}; // Root output file
+   TTree *fTree{nullptr}; // Root output tree
+
+   std::string fStorageName{};
+   std::vector<std::pair<std::string, void *>> fNameAddress;
+   std::unique_ptr<REntry> fEntry;
+   std::unique_ptr<RNTupleModel> fModel;
+   std::unique_ptr<RNTupleWriter> fWriter;
+
+   StorageMode fStorageMode{kTTree};
+
+   Bool_t fIsClosed{false}; // Info whether its file was closed
 };
 
 // inline functions
@@ -92,6 +123,26 @@ inline void TMCRootManager::SetDebug(Bool_t debug)
 inline Bool_t TMCRootManager::GetDebug()
 {
    return fgDebug;
+}
+
+template <typename T>
+void TMCRootManager::Register(const char *brname, T *&obj)
+{
+   if (fStorageMode == kTTree) {
+      fFile->cd();
+      if (!fTree->GetBranch(brname))
+         fTree->Branch(brname, &obj, 32000, 99);
+      else
+         fTree->GetBranch(brname)->SetAddress(&obj);
+   }
+   if (fStorageMode == kRNTuple) {
+      if (fModel) {
+         fModel->MakeField<T>(brname);
+      }
+      std::string oString;
+      oString = brname;
+      fNameAddress.push_back(std::make_pair(oString, obj));
+   }
 }
 
 #endif // ROOT_TMCRootManager

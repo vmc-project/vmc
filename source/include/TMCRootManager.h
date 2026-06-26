@@ -66,7 +66,7 @@ public:
    virtual ~TMCRootManager();
 
    // methods
-   template<typename T>
+   template <typename T>
    void Register(const char *name, T *&obj);
    void Register(const char *name, const char *className, void *objAddress);
    void Register(const char *name, const char *className, const void *objAddress);
@@ -98,19 +98,19 @@ private:
    void OpenFile(const char *projectName, FileMode fileMode, Int_t threadRank);
 
    // data members
-   Int_t fId;        // This manager ID
-   TFile *fFile {nullptr};     // Root output file
-   TTree *fTree {nullptr};     // Root output tree
+   Int_t fId;             // This manager ID
+   TFile *fFile{nullptr}; // Root output file
+   TTree *fTree{nullptr}; // Root output tree
 
-   std::string fStorageName {};
-   std::vector<std::pair<std::string, void*>> fNameAddress;
+   std::string fStorageName{};
+   std::vector<std::pair<std::string, void *>> fNameAddress;
    std::unique_ptr<REntry> fEntry;
    std::unique_ptr<RNTupleModel> fModel;
    std::unique_ptr<RNTupleWriter> fWriter;
 
-   StorageMode fStorageMode {kTTree};
+   StorageMode fStorageMode{kTTree};
 
-   Bool_t fIsClosed {false}; // Info whether its file was closed
+   Bool_t fIsClosed{false}; // Info whether its file was closed
 };
 
 // inline functions
@@ -125,8 +125,8 @@ inline Bool_t TMCRootManager::GetDebug()
    return fgDebug;
 }
 
-template<typename T>
-void TMCRootManager::Register(const char* brname, T*& obj)
+template <typename T>
+void TMCRootManager::Register(const char *brname, T *&obj)
 {
    if (fStorageMode == kTTree) {
       fFile->cd();

@@ -30,10 +30,14 @@
 
 class TParticle;
 
+using ROOT::Experimental::RNTupleParallelWriter;
+
 using ROOT::RNTupleFillStatus;
 using REntry = ROOT::REntry;
 using RNTupleModel = ROOT::RNTupleModel;
 using RNTupleWriter = ROOT::RNTupleWriter;
+using RNTupleFillContext = ROOT::Experimental::RNTupleFillContext;
+using RNTParaWriter = ROOT::Experimental::RNTupleParallelWriter;
 
 /// \brief The Root IO manager for VMC examples for both sequential and
 /// multi-threaded applications.
@@ -63,6 +67,7 @@ public:
 
    TMCRootManager(const char *projectName, FileMode fileMode = kWrite, Int_t threadRank = -1);
    TMCRootManager(const char *projectName, StorageMode storageMode, FileMode fileMode = kWrite, Int_t threadRank = -1);
+   TMCRootManager(std::shared_ptr<RNTParaWriter> sharedWriter);
    virtual ~TMCRootManager();
 
    // methods
@@ -76,7 +81,8 @@ public:
    void WriteAndClose();
    void ReadEvent(Int_t i);
 
-   void CreateRNTuple();
+   void CreateRNTuple(bool parallelMode = false, bool workerMode = false);
+   std::shared_ptr<RNTParaWriter> GetParallelRNTupleWriter() { return fParaWriter; }
 
 private:
    // not implemented
@@ -107,6 +113,8 @@ private:
    std::unique_ptr<REntry> fEntry;
    std::unique_ptr<RNTupleModel> fModel;
    std::unique_ptr<RNTupleWriter> fWriter;
+   std::shared_ptr<RNTParaWriter> fParaWriter;
+   std::shared_ptr<RNTupleFillContext> fFillContext;
 
    StorageMode fStorageMode{kTTree};
 

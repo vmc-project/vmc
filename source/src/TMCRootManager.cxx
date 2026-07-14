@@ -83,7 +83,6 @@ TMCRootManager::TMCRootManager(const char *projectName, TMCRootManager::StorageM
    /// \param projectName  The project name (passed as the Root tree name)
    /// \param fileMode     Option for opening Root file (read or write mode)
    /// \param threadRank   >0 when MT mode, -1 when sequential mode
-
    if (fgDebug)
       printf("TMCRootManager::TMCRootManager %p \n", this);
 
@@ -104,6 +103,7 @@ TMCRootManager::TMCRootManager(const char *projectName, TMCRootManager::StorageM
 
    fgInstance = this;
 
+   // SingleThreaded or MT worker with TTree output or MT main thread
    // open file and create a tree
    OpenFile(projectName, fileMode, threadRank);
 
@@ -112,6 +112,25 @@ TMCRootManager::TMCRootManager(const char *projectName, TMCRootManager::StorageM
 
    if (fgDebug)
       printf("Done TMCRootManagerMT::TMCRootManagerMT %p \n", this);
+}
+
+//_____________________________________________________________________________
+TMCRootManager::TMCRootManager(std::shared_ptr<RNTParaWriter> sharedWriter)
+   : fStorageMode(TMCRootManager::kRNTuple), fParaWriter(std::move(sharedWriter))
+{
+   // Set Id
+   fId = fgCounter;
+
+   // Increment counter
+   ++fgCounter;
+
+   // singleton instance
+   if (fgInstance) {
+      Fatal("TMCRootManager", "Attempt to create two instances of singleton.");
+      return;
+   }
+
+   fgInstance = this;
 }
 
 //_____________________________________________________________________________
@@ -216,13 +235,26 @@ void TMCRootManager::Register(const char *name, const char *className, const voi
 }
 
 //_____________________________________________________________________________
-void TMCRootManager::CreateRNTuple()
+void TMCRootManager::CreateRNTuple(bool parallelMode, bool workerMode)
 {
    if (fStorageMode == kRNTuple) {
-      fWriter = RNTupleWriter::Append(std::move(fModel), fStorageName.c_str(), *fFile);
-      fEntry = fWriter->GetModel().CreateBareEntry();
-      for (auto nameAddress : fNameAddress) {
-         fEntry->BindRawPtr(nameAddress.first, nameAddress.second);
+      if (!parallelMode) {
+         fWriter = RNTupleWriter::Append(std::move(fModel), fStorageName.c_str(), *fFile);
+         fEntry = fWriter->GetModel().CreateBareEntry();
+         for (auto nameAddress : fNameAddress) {
+            fEntry->BindRawPtr(nameAddress.first, nameAddress.second);
+         }
+      } else {
+         if (!workerMode) {
+            fParaWriter = std::shared_ptr<RNTParaWriter>(
+               RNTupleParallelWriter::Append(std::move(fModel), fStorageName.c_str(), *fFile).release());
+         } else {
+            fFillContext = fParaWriter->CreateFillContext();
+            fEntry = fFillContext->CreateEntry();
+            for (auto nameAddress : fNameAddress) {
+               fEntry->BindRawPtr(nameAddress.first, nameAddress.second);
+            }
+         }
       }
    }
 }
@@ -236,17 +268,21 @@ void TMCRootManager::Fill()
       fTree->Fill();
    } else if (fStorageMode == kRNTuple) {
       /// Fill the RNTuple.
-      RNTupleFillStatus status;
-      fWriter->FillNoFlush(*fEntry, status);
-      if (status.ShouldFlushCluster()) {
-         // If we are asked to flush, first try to do as much work as possible outside of the critical section:
-         // FlushColumns() will flush column data and trigger compression, but not actually write to storage.
-         // (A framework may of course also decide to flush more often.)
-         fWriter->FlushColumns();
-         {
-            // FlushCluster() will flush data to the underlying TFile, so it requires synchronization.
-            fWriter->FlushCluster();
+      if (!fParaWriter) {
+         RNTupleFillStatus status;
+         fWriter->FillNoFlush(*fEntry, status);
+         if (status.ShouldFlushCluster()) {
+            // If we are asked to flush, first try to do as much work as possible outside of the critical section:
+            // FlushColumns() will flush column data and trigger compression, but not actually write to storage.
+            // (A framework may of course also decide to flush more often.)
+            fWriter->FlushColumns();
+            {
+               // FlushCluster() will flush data to the underlying TFile, so it requires synchronization.
+               fWriter->FlushCluster();
+            }
          }
+      } else {
+         fFillContext->Fill(*fEntry);
       }
    }
 }
@@ -254,15 +290,19 @@ void TMCRootManager::Fill()
 //_____________________________________________________________________________
 void TMCRootManager::WriteAll()
 {
-
    if (fStorageMode == kTTree) {
       /// Write the Root tree in the file.
       fFile->cd();
       fFile->Write();
    } else if (fStorageMode == kRNTuple) {
       /// Write the RNTuple in the file.
-      fModel.reset();
-      fWriter.reset();
+      if (fParaWriter) {
+         fEntry.reset();
+         fFillContext.reset();
+      } else {
+         fModel.reset();
+         fWriter.reset();
+      }
    }
 }
 
@@ -270,10 +310,13 @@ void TMCRootManager::WriteAll()
 void TMCRootManager::Close()
 {
    /// Close the Root file.
-
    if (fIsClosed) {
       Error("Close", "The file was already closed.");
       return;
+   }
+
+   if (fParaWriter) {
+      fParaWriter->CommitDataset();
    }
 
    fFile->cd();

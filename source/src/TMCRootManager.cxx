@@ -114,6 +114,7 @@ TMCRootManager::TMCRootManager(const char *projectName, TMCRootManager::StorageM
       printf("Done TMCRootManagerMT::TMCRootManagerMT %p \n", this);
 }
 
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
 //_____________________________________________________________________________
 TMCRootManager::TMCRootManager(std::shared_ptr<RNTParaWriter> sharedWriter)
    : fStorageMode(TMCRootManager::kRNTuple), fParaWriter(std::move(sharedWriter))
@@ -132,6 +133,7 @@ TMCRootManager::TMCRootManager(std::shared_ptr<RNTParaWriter> sharedWriter)
 
    fgInstance = this;
 }
+#endif
 
 //_____________________________________________________________________________
 TMCRootManager::~TMCRootManager()
@@ -193,10 +195,12 @@ void TMCRootManager::OpenFile(const char *projectName, FileMode fileMode, Int_t 
          printf("Going to create TTree \n");
       if (fStorageMode == kTTree)
          fTree = new TTree(projectName, treeTitle);
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
       if (fStorageMode == kRNTuple) {
          fStorageName = projectName;
          fModel = RNTupleModel::Create();
       }
+#endif
       if (fgDebug)
          printf("Done: TTree %p \n", fTree);
       ;
@@ -234,6 +238,7 @@ void TMCRootManager::Register(const char *name, const char *className, const voi
    Register(name, className, const_cast<void *>(objAddress));
 }
 
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
 //_____________________________________________________________________________
 void TMCRootManager::CreateRNTuple(bool parallelMode, bool workerMode)
 {
@@ -258,6 +263,7 @@ void TMCRootManager::CreateRNTuple(bool parallelMode, bool workerMode)
       }
    }
 }
+#endif
 
 //_____________________________________________________________________________
 void TMCRootManager::Fill()
@@ -266,7 +272,9 @@ void TMCRootManager::Fill()
       /// Fill the Root tree.
       fFile->cd();
       fTree->Fill();
-   } else if (fStorageMode == kRNTuple) {
+   }
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
+   else if (fStorageMode == kRNTuple) {
       /// Fill the RNTuple.
       if (!fParaWriter) {
          RNTupleFillStatus status;
@@ -285,6 +293,7 @@ void TMCRootManager::Fill()
          fFillContext->Fill(*fEntry);
       }
    }
+#endif
 }
 
 //_____________________________________________________________________________
@@ -294,7 +303,9 @@ void TMCRootManager::WriteAll()
       /// Write the Root tree in the file.
       fFile->cd();
       fFile->Write();
-   } else if (fStorageMode == kRNTuple) {
+   }
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
+   else if (fStorageMode == kRNTuple) {
       /// Write the RNTuple in the file.
       if (fParaWriter) {
          fEntry.reset();
@@ -304,6 +315,7 @@ void TMCRootManager::WriteAll()
          fWriter.reset();
       }
    }
+#endif
 }
 
 //_____________________________________________________________________________
@@ -315,9 +327,11 @@ void TMCRootManager::Close()
       return;
    }
 
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
    if (fParaWriter) {
       fParaWriter->CommitDataset();
    }
+#endif
 
    fFile->cd();
    fFile->Close();

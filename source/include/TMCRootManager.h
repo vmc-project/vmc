@@ -20,6 +20,10 @@
 
 #include "TFile.h"
 #include "TTree.h"
+
+class TParticle;
+
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
 #include <ROOT/REntry.hxx>
 #include <ROOT/RField.hxx>
 #include <ROOT/RNTuple.hxx>
@@ -28,16 +32,16 @@
 #include <ROOT/RNTupleParallelWriter.hxx>
 #include <ROOT/RNTupleWriter.hxx>
 
-class TParticle;
-
-using ROOT::Experimental::RNTupleParallelWriter;
+using ROOT::RNTupleParallelWriter;
 
 using ROOT::RNTupleFillStatus;
 using REntry = ROOT::REntry;
 using RNTupleModel = ROOT::RNTupleModel;
 using RNTupleWriter = ROOT::RNTupleWriter;
-using RNTupleFillContext = ROOT::Experimental::RNTupleFillContext;
-using RNTParaWriter = ROOT::Experimental::RNTupleParallelWriter;
+using RNTupleFillContext = ROOT::RNTupleFillContext;
+using RNTParaWriter = ROOT::RNTupleParallelWriter;
+#endif
+
 
 /// \brief The Root IO manager for VMC examples for both sequential and
 /// multi-threaded applications.
@@ -67,7 +71,9 @@ public:
 
    TMCRootManager(const char *projectName, FileMode fileMode = kWrite, Int_t threadRank = -1);
    TMCRootManager(const char *projectName, StorageMode storageMode, FileMode fileMode = kWrite, Int_t threadRank = -1);
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
    TMCRootManager(std::shared_ptr<RNTParaWriter> sharedWriter);
+#endif
    virtual ~TMCRootManager();
 
    // methods
@@ -81,8 +87,10 @@ public:
    void WriteAndClose();
    void ReadEvent(Int_t i);
 
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
    void CreateRNTuple(bool parallelMode = false, bool workerMode = false);
    std::shared_ptr<RNTParaWriter> GetParallelRNTupleWriter() { return fParaWriter; }
+#endif
 
 private:
    // not implemented
@@ -108,6 +116,7 @@ private:
    TFile *fFile{nullptr}; // Root output file
    TTree *fTree{nullptr}; // Root output tree
 
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
    std::string fStorageName{};
    std::vector<std::pair<std::string, void *>> fNameAddress;
    std::unique_ptr<REntry> fEntry;
@@ -115,6 +124,7 @@ private:
    std::unique_ptr<RNTupleWriter> fWriter;
    std::shared_ptr<RNTParaWriter> fParaWriter;
    std::shared_ptr<RNTupleFillContext> fFillContext;
+#endif
 
    StorageMode fStorageMode{kTTree};
 
@@ -143,6 +153,7 @@ void TMCRootManager::Register(const char *brname, T *&obj)
       else
          fTree->GetBranch(brname)->SetAddress(&obj);
    }
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
    if (fStorageMode == kRNTuple) {
       if (fModel) {
          fModel->MakeField<T>(brname);
@@ -151,6 +162,7 @@ void TMCRootManager::Register(const char *brname, T *&obj)
       oString = brname;
       fNameAddress.push_back(std::make_pair(oString, obj));
    }
+#endif
 }
 
 #endif // ROOT_TMCRootManager

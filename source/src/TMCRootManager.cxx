@@ -15,16 +15,13 @@
 #include "TMCRootManager.h"
 #include "Riostream.h"
 #include "TError.h"
-#include "TFile.h"
 #include "TMCAutoLock.h"
 #include "TThread.h"
-#include "TTree.h"
 
 #include <atomic>
 #include <cstdio>
 #include <thread>
 #include <vector>
-
 
 namespace {
 // Define mutexes per operation which modify shared data
@@ -34,20 +31,20 @@ TMCMutex deleteMutex = TMCMUTEX_INITIALIZER;
 // A global counter to assign numbers sequentially
 std::atomic<int> global_thread_counter{0};
 
-int get_clean_thread_id() {
-    // This variable is unique to each thread.
-    // It initializes ONLY the first time this function is called on that thread.
-    thread_local int my_id = global_thread_counter++;
-    return my_id;
+int get_clean_thread_id()
+{
+   // This variable is unique to each thread.
+   // It initializes ONLY the first time this function is called on that thread.
+   thread_local int my_id = global_thread_counter++;
+   return my_id;
 }
 
-void threadWorker() {
-    // No arguments passed, but the thread can still get its 0, 1, 2 ID
-    std::cout << "Thread " << std::this_thread::get_id()
-              << " assigned itself Custom ID: " << get_clean_thread_id() << "\n";
+void threadWorker()
+{
+   // No arguments passed, but the thread can still get its 0, 1, 2 ID
+   std::cout << "Thread " << std::this_thread::get_id() << " assigned itself Custom ID: " << get_clean_thread_id()
+             << "\n";
 }
-
-
 
 } // namespace
 
@@ -73,13 +70,19 @@ TMCRootManager *TMCRootManager::Instance()
 
 //_____________________________________________________________________________
 TMCRootManager::TMCRootManager(const char *projectName, TMCRootManager::FileMode fileMode, Int_t threadRank)
-   : fFile(0), fTree(0), fIsClosed(false)
+   : TMCRootManager(projectName, TMCRootManager::kTTree, fileMode, threadRank)
+{
+}
+
+//_____________________________________________________________________________
+TMCRootManager::TMCRootManager(const char *projectName, TMCRootManager::StorageMode storageMode,
+                               TMCRootManager::FileMode fileMode, Int_t threadRank)
+   : fStorageMode(storageMode)
 {
    /// Standard constructor
    /// \param projectName  The project name (passed as the Root tree name)
    /// \param fileMode     Option for opening Root file (read or write mode)
    /// \param threadRank   >0 when MT mode, -1 when sequential mode
-
    if (fgDebug)
       printf("TMCRootManager::TMCRootManager %p \n", this);
 
@@ -100,6 +103,7 @@ TMCRootManager::TMCRootManager(const char *projectName, TMCRootManager::FileMode
 
    fgInstance = this;
 
+   // SingleThreaded or MT worker with TTree output or MT main thread
    // open file and create a tree
    OpenFile(projectName, fileMode, threadRank);
 
@@ -109,6 +113,27 @@ TMCRootManager::TMCRootManager(const char *projectName, TMCRootManager::FileMode
    if (fgDebug)
       printf("Done TMCRootManagerMT::TMCRootManagerMT %p \n", this);
 }
+
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
+//_____________________________________________________________________________
+TMCRootManager::TMCRootManager(std::shared_ptr<RNTParaWriter> sharedWriter)
+   : fStorageMode(TMCRootManager::kRNTuple), fParaWriter(std::move(sharedWriter))
+{
+   // Set Id
+   fId = fgCounter;
+
+   // Increment counter
+   ++fgCounter;
+
+   // singleton instance
+   if (fgInstance) {
+      Fatal("TMCRootManager", "Attempt to create two instances of singleton.");
+      return;
+   }
+
+   fgInstance = this;
+}
+#endif
 
 //_____________________________________________________________________________
 TMCRootManager::~TMCRootManager()
@@ -155,7 +180,8 @@ void TMCRootManager::OpenFile(const char *projectName, FileMode fileMode, Int_t 
    switch (fileMode) {
    case TMCRootManager::kRead:
       fFile = new TFile(fileName);
-      fTree = (TTree *)fFile->Get(projectName);
+      if (fStorageMode == kTTree)
+         fTree = (TTree *)fFile->Get(projectName);
       break;
 
    case TMCRootManager::kWrite:
@@ -167,7 +193,14 @@ void TMCRootManager::OpenFile(const char *projectName, FileMode fileMode, Int_t 
 
       if (fgDebug)
          printf("Going to create TTree \n");
-      fTree = new TTree(projectName, treeTitle);
+      if (fStorageMode == kTTree)
+         fTree = new TTree(projectName, treeTitle);
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
+      if (fStorageMode == kRNTuple) {
+         fStorageName = projectName;
+         fModel = RNTupleModel::Create();
+      }
+#endif
       if (fgDebug)
          printf("Done: TTree %p \n", fTree);
       ;
@@ -205,33 +238,100 @@ void TMCRootManager::Register(const char *name, const char *className, const voi
    Register(name, className, const_cast<void *>(objAddress));
 }
 
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
+//_____________________________________________________________________________
+void TMCRootManager::CreateRNTuple(bool parallelMode, bool workerMode)
+{
+   if (fStorageMode == kRNTuple) {
+      if (!parallelMode) {
+         fWriter = RNTupleWriter::Append(std::move(fModel), fStorageName.c_str(), *fFile);
+         fEntry = fWriter->GetModel().CreateBareEntry();
+         for (auto nameAddress : fNameAddress) {
+            fEntry->BindRawPtr(nameAddress.first, nameAddress.second);
+         }
+      } else {
+         if (!workerMode) {
+            fParaWriter = std::shared_ptr<RNTParaWriter>(
+               RNTupleParallelWriter::Append(std::move(fModel), fStorageName.c_str(), *fFile).release());
+         } else {
+            fFillContext = fParaWriter->CreateFillContext();
+            fEntry = fFillContext->CreateEntry();
+            for (auto nameAddress : fNameAddress) {
+               fEntry->BindRawPtr(nameAddress.first, nameAddress.second);
+            }
+         }
+      }
+   }
+}
+#endif
+
 //_____________________________________________________________________________
 void TMCRootManager::Fill()
 {
-   /// Fill the Root tree.
-
-   fFile->cd();
-   fTree->Fill();
+   if (fStorageMode == kTTree) {
+      /// Fill the Root tree.
+      fFile->cd();
+      fTree->Fill();
+   }
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
+   else if (fStorageMode == kRNTuple) {
+      /// Fill the RNTuple.
+      if (!fParaWriter) {
+         RNTupleFillStatus status;
+         fWriter->FillNoFlush(*fEntry, status);
+         if (status.ShouldFlushCluster()) {
+            // If we are asked to flush, first try to do as much work as possible outside of the critical section:
+            // FlushColumns() will flush column data and trigger compression, but not actually write to storage.
+            // (A framework may of course also decide to flush more often.)
+            fWriter->FlushColumns();
+            {
+               // FlushCluster() will flush data to the underlying TFile, so it requires synchronization.
+               fWriter->FlushCluster();
+            }
+         }
+      } else {
+         fFillContext->Fill(*fEntry);
+      }
+   }
+#endif
 }
 
 //_____________________________________________________________________________
 void TMCRootManager::WriteAll()
 {
-   /// Write the Root tree in the file.
-
-   fFile->cd();
-   fFile->Write();
+   if (fStorageMode == kTTree) {
+      /// Write the Root tree in the file.
+      fFile->cd();
+      fFile->Write();
+   }
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
+   else if (fStorageMode == kRNTuple) {
+      /// Write the RNTuple in the file.
+      if (fParaWriter) {
+         fEntry.reset();
+         fFillContext.reset();
+      } else {
+         fModel.reset();
+         fWriter.reset();
+      }
+   }
+#endif
 }
 
 //_____________________________________________________________________________
 void TMCRootManager::Close()
 {
    /// Close the Root file.
-
    if (fIsClosed) {
       Error("Close", "The file was already closed.");
       return;
    }
+
+#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
+   if (fParaWriter) {
+      fParaWriter->CommitDataset();
+   }
+#endif
 
    fFile->cd();
    fFile->Close();

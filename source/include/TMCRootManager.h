@@ -16,32 +16,13 @@
 /// \author I. Hrivnacova; IPN Orsay
 
 #include "TMCtls.h"
+#include "TMCRNTupleWriter.h"
+#include "TMCRNTupleParallelWriter.h"
+#include "TMCTTreeWriter.h"
+
 #include <Rtypes.h>
 
-#include "TFile.h"
-#include "TTree.h"
-
-class TParticle;
-
-#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
-#include <ROOT/REntry.hxx>
-#include <ROOT/RField.hxx>
-#include <ROOT/RNTuple.hxx>
-#include <ROOT/RNTupleFillStatus.hxx>
-#include <ROOT/RNTupleModel.hxx>
-#include <ROOT/RNTupleParallelWriter.hxx>
-#include <ROOT/RNTupleWriter.hxx>
-
-using ROOT::RNTupleParallelWriter;
-
-using ROOT::RNTupleFillStatus;
-using REntry = ROOT::REntry;
-using RNTupleModel = ROOT::RNTupleModel;
-using RNTupleWriter = ROOT::RNTupleWriter;
-using RNTupleFillContext = ROOT::RNTupleFillContext;
-using RNTParaWriter = ROOT::RNTupleParallelWriter;
-#endif
-
+class TFile;
 
 /// \brief The Root IO manager for VMC examples for both sequential and
 /// multi-threaded applications.
@@ -58,7 +39,8 @@ public:
    };
    enum StorageMode {
       kTTree,  // TTree storage
-      kRNTuple // RNTuple storage
+      kRNTuple, // RNTuple storage
+      kRNTupleParallel // RNTuple storage with parallel write
    };
 
 public:
@@ -68,12 +50,11 @@ public:
    // static method for activating debug mode
    static void SetDebug(Bool_t debug);
    static Bool_t GetDebug();
+   static void SetStorageMode(StorageMode mode);
+   static StorageMode GetStorageMode();
+   static TString GetFileModifier(StorageMode mode);
 
    TMCRootManager(const char *projectName, FileMode fileMode = kWrite, Int_t threadRank = -1);
-   TMCRootManager(const char *projectName, StorageMode storageMode, FileMode fileMode = kWrite, Int_t threadRank = -1);
-#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
-   TMCRootManager(std::shared_ptr<RNTParaWriter> sharedWriter);
-#endif
    virtual ~TMCRootManager();
 
    // methods
@@ -81,16 +62,16 @@ public:
    void Register(const char *name, T *&obj);
    void Register(const char *name, const char *className, void *objAddress);
    void Register(const char *name, const char *className, const void *objAddress);
+   void CreateRNTuple();
    void Fill();
    void WriteAll();
    void Close();
    void WriteAndClose();
    void ReadEvent(Int_t i);
 
-#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
-   void CreateRNTuple(bool parallelMode = false, bool workerMode = false);
-   std::shared_ptr<RNTParaWriter> GetParallelRNTupleWriter() { return fParaWriter; }
-#endif
+   // get methods
+   TString GetFileModifier() const;
+   TMCVNtupleWriter* GetNtupleWriter() {return fNtupleWriter; }
 
 private:
    // not implemented
@@ -101,9 +82,10 @@ private:
    static Int_t fgCounter; // The counter of instances
    // static data members
    static Bool_t fgDebug; // Option to activate debug printings
+   static StorageMode fgStorageMode;
 
 #if !defined(__CINT__)
-   static TMCThreadLocal TMCRootManager *fgInstance; // singleton instance
+   static TMCThreadLocal TMCRootManager *fgInstance; // singleton thread local instance
 #else
    static TMCRootManager *fgInstance; // singleton instance
 #endif
@@ -112,22 +94,9 @@ private:
    void OpenFile(const char *projectName, FileMode fileMode, Int_t threadRank);
 
    // data members
-   Int_t fId;             // This manager ID
+   Int_t fId{0};          // This manager ID
    TFile *fFile{nullptr}; // Root output file
-   TTree *fTree{nullptr}; // Root output tree
-
-#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
-   std::string fStorageName{};
-   std::vector<std::pair<std::string, void *>> fNameAddress;
-   std::unique_ptr<REntry> fEntry;
-   std::unique_ptr<RNTupleModel> fModel;
-   std::unique_ptr<RNTupleWriter> fWriter;
-   std::shared_ptr<RNTParaWriter> fParaWriter;
-   std::shared_ptr<RNTupleFillContext> fFillContext;
-#endif
-
-   StorageMode fStorageMode{kTTree};
-
+   TMCVNtupleWriter* fNtupleWriter{nullptr}; // ntuple manager
    Bool_t fIsClosed{false}; // Info whether its file was closed
 };
 
@@ -143,26 +112,23 @@ inline Bool_t TMCRootManager::GetDebug()
    return fgDebug;
 }
 
+inline TMCRootManager::StorageMode TMCRootManager::GetStorageMode()
+{
+   return fgStorageMode;
+}
+
 template <typename T>
 void TMCRootManager::Register(const char *brname, T *&obj)
 {
-   if (fStorageMode == kTTree) {
-      fFile->cd();
-      if (!fTree->GetBranch(brname))
-         fTree->Branch(brname, &obj, 32000, 99);
-      else
-         fTree->GetBranch(brname)->SetAddress(&obj);
+   if (fgStorageMode == kTTree) {
+      dynamic_cast<TMCTTreeWriter*>(fNtupleWriter)->Register<T>(brname, obj);
    }
-#if (ROOT_VERSION_CODE >= ROOT_VERSION(6, 38, 0))
-   if (fStorageMode == kRNTuple) {
-      if (fModel) {
-         fModel->MakeField<T>(brname);
-      }
-      std::string oString;
-      oString = brname;
-      fNameAddress.push_back(std::make_pair(oString, obj));
+   if (fgStorageMode == kRNTuple) {
+      dynamic_cast<TMCRNTupleWriter*>(fNtupleWriter)->Register<T>(brname, obj);
    }
-#endif
+   if (fgStorageMode == kRNTupleParallel) {
+      dynamic_cast<TMCRNTupleParallelWriter*>(fNtupleWriter)->Register<T>(brname, obj);
+   }
 }
 
 #endif // ROOT_TMCRootManager

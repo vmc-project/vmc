@@ -211,7 +211,7 @@ void TMCRootManager::OpenFile(const char *projectName, FileMode fileMode, Int_t 
         printf("Created TTreeWriter \n");   
    }
    if (fgStorageMode == kRNTuple) {
-      fNtupleWriter = new TMCRNTupleWriter(projectName, fFile, threadRank>0);
+      fNtupleWriter = new TMCRNTupleWriter(projectName, fFile, threadRank>0, (fileMode==kRead));
       if (fgDebug)
         printf("Created RNTupleWriter \n");   
    }

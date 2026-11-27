@@ -11,7 +11,7 @@
 /// \brief Implementation of the TMCRNTupleWriter class
 ///
 /// Refactored from TMCRootManager class updated for RNTuple output
-/// by R. Karabowitz; GSI
+/// by R. Karabowicz; GSI
 ///
 /// \author I. Hrivnacova; IJCLab Orsay
 
@@ -26,11 +26,17 @@
 //
 
 //_____________________________________________________________________________
-TMCRNTupleWriter::TMCRNTupleWriter(const char *storageName, TFile* file, Bool_t workerMode)
- : TMCVNtupleWriter(storageName, file, workerMode)
- {
-   fModel = RNTupleModel::Create();
- }   
+TMCRNTupleWriter::TMCRNTupleWriter(const char *storageName, TFile *file, Bool_t workerMode, Bool_t readerMode)
+   : TMCVNtupleWriter(storageName, file, workerMode), fReaderMode(readerMode)
+{
+   if (fReaderMode) {
+      std::cout << "reader mode" << std::endl;
+      fReader = RNTupleReader::Open(storageName, file->GetName());
+   } else {
+      std::cout << "writer mode" << std::endl;
+      fModel = RNTupleModel::Create();
+   }
+}
 
 //
 // public methods
@@ -39,6 +45,8 @@ TMCRNTupleWriter::TMCRNTupleWriter(const char *storageName, TFile* file, Bool_t 
 //_____________________________________________________________________________
 void TMCRNTupleWriter::CreateRNTuple()
 {
+   if (fReaderMode)
+      return;
    if (!fFile) {
       Error("TMCRNTupleWriter", "File not found, cannot create rntuple.");
       return;
@@ -54,6 +62,8 @@ void TMCRNTupleWriter::CreateRNTuple()
 //_____________________________________________________________________________
 void TMCRNTupleWriter::Fill()
 {
+   if (fReaderMode)
+      return;
    /// Fill the RNTuple.
    RNTupleFillStatus status;
    fWriter->FillNoFlush(*fEntry, status);
@@ -72,9 +82,21 @@ void TMCRNTupleWriter::Fill()
 //_____________________________________________________________________________
 void TMCRNTupleWriter::WriteAll()
 {
+   if (fReaderMode)
+      return;
    /// Write the RNTuple in the file.
    fModel.reset();
    fWriter.reset();
+}
+
+//_____________________________________________________________________________
+void TMCRNTupleWriter::ReadEvent(Int_t i)
+{
+   if (!fReaderMode)
+      return;
+   /// Read the event data for \em i -th event for all connected branches.
+   /// \param i  The event to be read
+   fReader->LoadEntry(i);
 }
 
 #endif
